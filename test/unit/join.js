@@ -27,7 +27,7 @@ describe('join test', function() {
       [5, 'e', 'te'],
       [7, 'f', 'tf']
     ]
-  }
+  };
 
   tb = {
     columns : [
@@ -40,7 +40,7 @@ describe('join test', function() {
       [2, 'd', 'db'],
       [6, 'e', 'de'],
       [7, 'f', 'df'],
-      [8, 'e', 'de'],
+      [8, 'e', 'de']
     ]
   }
     
@@ -51,9 +51,9 @@ describe('join test', function() {
     var on = {
       left :  [{table : 'a', column : 'id'}],
       right : [{table : 'b', column : 'id'}]
-    }
+    };
 
-    var res = Join.innerJoin(ta, tb ,on)
+    var res = Join.innerJoin(ta, tb ,on);
     res.should.eql({
       columns : [
         [
@@ -78,8 +78,8 @@ describe('join test', function() {
     var on = {
       left  : [{table : 'a', column : 'id'}, {table : 'a', column : 'name'}],
       right : [{table : 'b', column : 'id'}, {table : 'b', column : 'name'}]
-    }
-    var res = Join.innerJoin(ta, tb ,on)
+    };
+    var res = Join.innerJoin(ta, tb ,on);
     res.should.eql({
       columns : [
         [{table : 'a', column : 'id'}, {table : 'b', column : 'id'}],
@@ -98,7 +98,7 @@ describe('join test', function() {
     var on = {
       left : [{table : 'a', column : 'id'}],
       right : [{table : 'b', column : 'id'}]
-    }
+    };
 
     var res = Join.leftJoin(ta, tb ,on);
     res.should.eql({
@@ -125,7 +125,7 @@ describe('join test', function() {
     var on = {
       left  : [{table : 'a', column : 'id'}, {table : 'a', column : 'name'}],
       right : [{table : 'b', column : 'id'}, {table : 'b', column : 'name'}]
-    }
+    };
 
     var res = Join.leftJoin(ta, tb ,on);
     res.should.eql({

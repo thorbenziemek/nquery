@@ -16,11 +16,12 @@ function inspect(obj) {
 function test(fn, name) {
   var b = new Date();
   var res;
+  var ast;
   for (var i = 0; i < NUM; i++) {
     ast = fn();  
   }
   var e = new Date();
-  debug('-------------')
+  debug('-------------');
   debug('id : ' + name);
   debug('loop: ' + NUM + ', time: ' + (e-b));
   debug(Adapter.toSQL(ast)); 
@@ -54,10 +55,10 @@ function columnTest(){
 }
 
 test(columnTest, 'column test');
-test(parseTest, 'sql parse')
-test(tplParseTest, 'sql tpl Parse')
+test(parseTest, 'sql parse');
+test(tplParseTest, 'sql tpl Parse');
 
-test(parseTest, 'sql parse')
-test(tplParseTest, 'sql tpl Parse')
+test(parseTest, 'sql parse');
+test(tplParseTest, 'sql tpl Parse');
 
 

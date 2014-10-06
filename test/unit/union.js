@@ -37,5 +37,5 @@ describe('union test',function(){
     });
   })
   
-})
+});
 

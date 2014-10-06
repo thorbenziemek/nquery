@@ -16,21 +16,21 @@ describe('extractor test',function(){
     'primaryKeys' : ['id'],
     'rangeQuery'  : true,
     'prefixMatch' : true
-  }
+  };
 
   it('single-key simple test', function() {
     var sql ,ast, info;
     //sql = "select * from a where id > 0 AND name < 0 and id = 3 and type = 't' and id in ('1', '2') AND (id = 4 OR id =5) OR id = 2",
-    sql = "select * from a where id = 2",
+    sql = "select * from a where id = 2";
     ast = Parser.parse(sql);
     inspect(ast);
     info = Extractor.getKeyInfo(ast.where, options);
 
     info.should.eql({
       'IN' : [2]  
-    })
+    });
 
-    sql = "select * from a where id = 2 OR nid = 2",
+    sql = "select * from a where id = 2 OR nid = 2";
     ast = Parser.parse(sql);
     inspect(ast);
     try {
@@ -42,7 +42,7 @@ describe('extractor test',function(){
 
   it('single-key and link test', function() {
     var sql ,ast, info;
-    sql = "select * from a where id > 0 AND name < 0 and id = 3 and type = 't' and id in ('1', '2') AND (id = 4 OR id =5)",
+    sql = "select * from a where id > 0 AND name < 0 and id = 3 and type = 't' and id in ('1', '2') AND (id = 4 OR id =5)";
     //sql = "select * from a where id > 0 AND name < 0 and id = 3";
     ast = Parser.parse(sql);
     inspect(ast);
@@ -55,7 +55,7 @@ describe('extractor test',function(){
 
   it('single-key OR link test', function() {
     var sql ,ast, info;
-    sql = "select * from a where id > 0 AND id = 3 OR (id = 4 OR id =5)",
+    sql = "select * from a where id > 0 AND id = 3 OR (id = 4 OR id =5)";
     //sql = "select * from a where id > 0 AND name < 0 and id = 3";
     ast = Parser.parse(sql);
     inspect(ast);
@@ -72,7 +72,7 @@ describe('extractor test',function(){
     env = {
       id : -1,
       arr : [4, 5]
-    }
+    };
     //sql = "select * from a where id > 0 AND name < 0 and id = 3";
     ast = Parser.parse(sql);
     inspect(ast);

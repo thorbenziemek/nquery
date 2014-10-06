@@ -27,9 +27,9 @@ describe('disticnt test', function() {
         [2,   3, 4],
         [2,   4, 4],
         [6,   3, 4],
-        [1,   2, 3],
+        [1,   2, 3]
       ]
-    }
+    };
 
     var res = distinct(data);
     res.data.should.eql([
@@ -39,7 +39,7 @@ describe('disticnt test', function() {
         [2,   4, 4],
         [4,   3, 4],
         [3,   3, 4],
-        [6,   3, 4],
+        [6,   3, 4]
       ]
     );
   });

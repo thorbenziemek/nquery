@@ -45,7 +45,7 @@ describe('data filter test', function(){
         ],
         data: [ 
           [ 2, 'b', 't2' ], 
-          [ 2, 'b', 't3' ], 
+          [ 2, 'b', 't3' ]
         ] 
       },
       'string_c__number_3' : {
@@ -66,7 +66,7 @@ describe('data filter test', function(){
           [{table : 'b', column : 'type'}]
         ],
         data: [ 
-          [ 5, 'b', 't3' ], 
+          [ 5, 'b', 't3' ]
         ] 
       },
       'string_b__number_6' : {

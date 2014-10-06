@@ -13,7 +13,7 @@ describe('select test',function(){
     sql = "SELECT a";
     ast = Parser.parse(sql);
 
-    ast.columns.length.should.eql(1)
+    ast.columns.length.should.eql(1);
     ast.distinct.should.eql('');
     ast.where.should.eql('');
     ast.from.should.eql('');
@@ -257,12 +257,12 @@ describe('select test',function(){
 
   it('keyword as table test', function() {
     var sql, ast;
-    sql = 'select * from service_a.table as sa inner join service_b.table as sb on sa.id=sb.id where sa.fm=f and sb.id=3'
+    sql = 'select * from service_a.table as sa inner join service_b.table as sb on sa.id=sb.id where sa.fm=f and sb.id=3';
 
     ast = Parser.parse(sql);
     //inspect(ast);
     //ast.from.should.eql([});   
   });
 
-})
+});
 

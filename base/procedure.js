@@ -140,14 +140,14 @@ function regularOnExpr(on) {
   var ons = {
     left : [],
     right: []
-  }
+  };
   var rel;
   for (var i = 0; i < rels.length; i++) {
     rel = rels[i];
     ons.left.push({
       table : rel.left.table,
       column: rel.left.column
-    })
+    });
     ons.right.push({
       table : rel.right.table,
       column: rel.right.column
@@ -220,5 +220,5 @@ Task.prototype.run = function(cb) {
       cb(null);
     }
   });
-}
+};
 

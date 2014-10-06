@@ -43,7 +43,7 @@ function order(stmts) {
         type : 'var',
         name : '__return',
         members : []
-      }
+      };
       nr.right = s.stmt.expr;
 
       stmts[i].stmt = nr;
@@ -53,7 +53,7 @@ function order(stmts) {
     o = {
       'var' : v,
       'deps': deps
-    }
+    };
     nodes.push(o);
   }
 

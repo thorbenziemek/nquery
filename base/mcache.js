@@ -30,7 +30,7 @@ Cache.prototype.get = function(key) {
     pb = pb.body 
   } 
   return pb;
-}
+};
 
 Cache.prototype.set = function(key, value) {
   //remove the last ono
@@ -42,12 +42,12 @@ Cache.prototype.set = function(key, value) {
   this.map[key] = {
     body : value,
     pos  : this.pos
-  }
+  };
   this.stair[this.pos] = key;
   return this.pos++;
-}
+};
 
 Cache.prototype.top = function(n) {
   n = n || this.pos;
   return this.stair.slice(0, n);
-}
+};

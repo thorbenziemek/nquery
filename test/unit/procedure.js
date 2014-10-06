@@ -20,7 +20,7 @@ describe('procedure test',function(){
     sql = [
       "$a := 'str'",
       "$b := $a + 1",
-      "$c := $a.c + $b",
+      "$c := $a.c + $b"
     ];
     sql = sql.join('\n');
     ast = Parser.parse(sql);

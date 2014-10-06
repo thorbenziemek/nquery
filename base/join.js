@@ -46,7 +46,7 @@ function leftJoin(ta ,tb, on){
       for (k = 0; k < acols[j].length; k++) {
         tbCol = acols[j][k];
         if (tbCol.table == ka[i].table && tbCol.column == ka[i].column) {
-          apos.push(j)
+          apos.push(j);
           found = true;
           break;
         }
@@ -64,7 +64,7 @@ function leftJoin(ta ,tb, on){
       for (k = 0; k < bcols[j].length; k++) {
         tbCol = bcols[j][k];
         if (tbCol.table == kb[i].table && tbCol.column == kb[i].column) {
-          bpos.push(j)
+          bpos.push(j);
           found = true;
           break;
         }
@@ -178,7 +178,7 @@ function innerJoin(ta ,tb, on){
       for (k = 0; k < acols[j].length; k++) {
         tbCol = acols[j][k];
         if (tbCol.table == ka[i].table && tbCol.column == ka[i].column) {
-          apos.push(j)
+          apos.push(j);
           found = true;
           break;
         }
@@ -195,7 +195,7 @@ function innerJoin(ta ,tb, on){
       for (k = 0; k < bcols[j].length; k++) {
         tbCol = bcols[j][k];
         if (tbCol.table == kb[i].table && tbCol.column == kb[i].column) {
-          bpos.push(j)
+          bpos.push(j);
           found = true;
           break;
         }

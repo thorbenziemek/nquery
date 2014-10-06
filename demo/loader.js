@@ -5,7 +5,7 @@
 
 // Author :windyrobin <windyrobin@Gmail.com>
 
-var nQuery    = require('../index')
+var nQuery    = require('../index');
 
 var Adapter   = nQuery.Adapter;
 var Context   = nQuery.Context;
@@ -16,11 +16,11 @@ var dbInfo = {};
 
 exports.setDBInfo = function(info) {
   dbInfo = info;
-}
+};
 
 exports.setKVInfo = function(info) {
   kvInfo = info;
-}
+};
 
 exports.load = load;
 

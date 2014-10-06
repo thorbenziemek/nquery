@@ -18,7 +18,7 @@
 module.exports  = function (dc){
   dc.data = distinct(dc.data);
   return dc;
-}
+};
 
 function distinct(data){
   var res = [];

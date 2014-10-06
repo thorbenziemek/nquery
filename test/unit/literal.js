@@ -47,5 +47,5 @@ describe('literal test',function(){
       { expr: { type: 'null', value: null },      as: '' }
     ])
   });   
-})
+});
 

@@ -9,7 +9,7 @@ var Engine        = require('../lib/engine');
 var AstHelper     = require('../lib/ast_helper');
 
 var runExpr       = Engine.run;
-var fillExprOnRow = AstHelper.fillExprOnRow
+var fillExprOnRow = AstHelper.fillExprOnRow;
 
 module.exports = filter;
 

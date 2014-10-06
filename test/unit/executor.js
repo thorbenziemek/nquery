@@ -27,7 +27,7 @@ describe('executor test', function(){
   it('column all test', function(done){
     var str, ast;
 
-    str = 'select * from a'
+    str = 'select * from a';
     ast = Parser.parse(str);
     Executor.setLoader(function(ar, env, cb){
       cb(null, rawData, ar);
@@ -82,7 +82,7 @@ describe('executor test', function(){
   });
 
   it('as column name replace ', function(done){
-    var str = 'select id as rid, sex as rsex from a'
+    var str = 'select id as rid, sex as rsex from a';
     Executor.setLoader(function(ar, env, cb){
       cb(null, rawData, ar);
     });
@@ -100,14 +100,14 @@ describe('executor test', function(){
             [ 8, 'f' ], 
             [ 10, 'f' ] 
           ] 
-        })
+        });
         done();
       }
     });
   });
 
   it('limits filter test', function(done){
-    var str = 'select * from a limit 1, 2'
+    var str = 'select * from a limit 1, 2';
     Executor.setLoader(function(ar, env, cb){
       cb(null, rawData, ar);
     });
@@ -123,9 +123,9 @@ describe('executor test', function(){
             [ 4, 'f' ], 
             [ 6, 'f' ] 
           ] 
-        })
+        });
         done();
-      };
+      }
     });
   });
 
@@ -142,7 +142,7 @@ describe('executor test', function(){
         [ 10, 'c' ] 
       ] 
     };
-    var str = 'select * from a order by sex ASc, id DESC '
+    var str = 'select * from a order by sex ASc, id DESC ';
     Executor.setLoader(function(ar, env, cb){
       cb(null, rawData, ar);
     });
@@ -163,7 +163,7 @@ describe('executor test', function(){
           ] 
         });
         done();
-      };
+      }
     });
   });
 
@@ -188,7 +188,7 @@ describe('executor test', function(){
     Executor.setLoader(function(ar, env, cb){
       cb(null, rawData, ar);
     });
-    var str = 'select id, sex from data group by id'
+    var str = 'select id, sex from data group by id';
 
     var ast = Parser.parse(str);
     Executor.runAST(ast, function(err, dc){
@@ -208,7 +208,7 @@ describe('executor test', function(){
       }
     });
 
-    str = 'select id, count(id) from data group by id'
+    str = 'select id, count(id) from data group by id';
 
     ast = Parser.parse(str);
     Executor.runAST(ast, function(err, dc){
@@ -228,7 +228,7 @@ describe('executor test', function(){
       }
     });
 
-  })
+  });
 
   it('groupby&orderby ', function(){
     var rawData = { 
@@ -251,7 +251,7 @@ describe('executor test', function(){
     Executor.setLoader(function(ar, env, cb){
       cb(null, rawData, ar);
     });
-    var str = 'select id, min(sex) as msex from data group by id order by count(id)'
+    var str = 'select id, min(sex) as msex from data group by id order by count(id)';
 
     var ast = Parser.parse(str);
     Executor.runAST(ast, function(err, dc){
@@ -265,7 +265,7 @@ describe('executor test', function(){
             [ 9, 'f' ], 
             [ 10, 'c' ], 
             [ 8, 'a' ], 
-            [ 4, 'b' ], 
+            [ 4, 'b' ]
           ] 
         });
       }

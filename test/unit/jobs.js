@@ -59,7 +59,7 @@ describe('jobs test', function(){
     
   it('concurrent error test', function(done) {
     Jobs.doConcurrent([t0, t3, t2], function(err){
-      err.message.should.eql('Task3 Failed')
+      err.message.should.eql('Task3 Failed');
       done();
     });
   });
@@ -73,7 +73,7 @@ describe('jobs test', function(){
 
   it('sequential error test', function(done) {
     Jobs.doSequential([t0, t3, t2], function(err){
-      err.message.should.eql('Task3 Failed')
+      err.message.should.eql('Task3 Failed');
       done();
     });
   });

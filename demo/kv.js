@@ -28,7 +28,7 @@ module.exports = {
   singleQuery : singleQuery,  
   rangeQuery  : rangeQuery,
   likeQuery   : likeQuery
-}
+};
 
 function singleQuery(k) {
   var rows = data;
@@ -37,7 +37,7 @@ function singleQuery(k) {
   var ret = {
     columns : columns,
     data : []
-  }
+  };
   for (var i = 0; i < rows.length; i++) {
     row = rows[i];
     if (row[0] == k) {
@@ -55,7 +55,7 @@ function rangeQuery(beg, end) {
   var ret = {
     columns : columns,
     data : []
-  }
+  };
   for (var i = 0; i < rows.length; i++) {
     row = rows[i];
     if (row[0] >= beg && row[0] < end) {
@@ -74,7 +74,7 @@ function likeQuery(str) {
   var ret = {
     columns : columns,
     data : []
-  }
+  };
   for (var i = 0; i < rows.length; i++) {
     row = rows[i];
     if (row[0].indexOf(str) == 0) {

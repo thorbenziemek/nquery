@@ -101,7 +101,7 @@ function selectCol(dc, sels) {
   for (i = 0; i < sels.length; i++) {
     e = sels[i].expr;
     rc = getRefColumns(e);
-    rp = getRefColPos(rc, columns)
+    rp = getRefColPos(rc, columns);
 
     exprs.push(e);
     refPos.push(rp);

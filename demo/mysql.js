@@ -25,7 +25,7 @@ var dc = {
     ['onesa',  'd', 8, 'summer', 320],
     ['miller', 'd', 9, 'summer', 320]
   ]
-}
+};
 
 exports.query = function(str, cb) {
   var dc;
@@ -36,7 +36,7 @@ exports.query = function(str, cb) {
     return;
   }
   cb(null, dc);
-}
+};
 
 var doSelectFilter = Executor.doSelectFilter;
 

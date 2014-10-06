@@ -39,7 +39,7 @@ describe('orderby  test', function(){
           type : 'DESC'
         }
       ]  
-    }
+    };
     var sp = new AstReader(ast);
     var ed = doOrderby(rawData, [
       {name : {table : '', column : 'sex'}, type : 'ASC'},

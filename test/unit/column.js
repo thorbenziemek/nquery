@@ -40,7 +40,7 @@ describe('column filter test', function(){
         {expr : idSel, as : ''},
         {expr : typeSel, as : ''}
       ]  
-    }
+    };
 
     var res = filter(rawData, e.columns); 
     res.data.should.eql([
@@ -120,7 +120,7 @@ describe('column filter test', function(){
         {expr : idSel, as : 'aaid'},
         {expr : typeSel, as : ''}
       ]  
-    }
+    };
     var res = filter(rawData, e.columns); 
     res.columns.should.eql([
         [{table : 'a', column : 'id'}, {table : '', column : 'aaid'}],

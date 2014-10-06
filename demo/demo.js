@@ -28,7 +28,7 @@ var kvInfo = {
     prefixMatch : true,
     rangeQuery  : true
   }
-}
+};
 
 var dbInfo = {
   kv: {
@@ -39,7 +39,7 @@ var dbInfo = {
     storageType   : 'sql',
     storageEngine : Mysql
   }
-}
+};
 
 
 function main() {
@@ -53,14 +53,14 @@ function main() {
      "SELECT * FROM kv.user WHERE id LIKE '1%'",
      "SELECT type, MAX(age), COUNT(id) FROM kv.user WHERE id BETWEEN '03' AND '10' GROUP BY type ORDER BY MAX(age) DESC",
      "SELECT * from mysql.shop where shop_id > 5"
-  ]
+  ];
 
   var concurrentJoinSQL = [
     "$a := select * from kv.user where id BETWEEN '03' and '10'",
     "$b := select * from mysql.shop where shop_id > 5",
     "$c := select a.type , a.id ,b.name, b.title from $a INNER JOIN $b ON a.type = b.type WHERE a.id > '04'",
     "return $c"
-  ]
+  ];
 
   var sequentialJoinSQL = [
     "$a := select * from kv.user where id BETWEEN '03' and '10'",
@@ -70,7 +70,7 @@ function main() {
     "$b := select * from mysql.shop where type in $a.type",
     "$c := select a.type , a.id ,b.name, b.title from $a INNER JOIN $b ON a.type = b.type WHERE a.id > '04'",
     "return [$b, $c]"
-  ]
+  ];
 
   printSeperator();
 

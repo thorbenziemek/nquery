@@ -123,7 +123,7 @@ describe('template test',function(){
       } 
     ]);
 
-  })
+  });
 
   it('limit template ', function(){
     var sql, ast;
@@ -134,7 +134,7 @@ describe('template test',function(){
       { type: 'number', value: 1 },
       { type: 'number', value: 5 } 
     ]);
-  })
+  });
 
   it('contains test', function(){
     var sql, ast;
@@ -153,7 +153,7 @@ describe('template test',function(){
         ]
       }
     });
-  })
+  });
 
   it('between test', function(){
     var sql, ast;
@@ -182,7 +182,7 @@ describe('template test',function(){
     } catch(e) {
       e.message.should.containEql('not instantiated :id');
     }
-  })
+  });
 
   it('update template ', function(){
     var sql, ast;
@@ -197,7 +197,7 @@ describe('template test',function(){
       "bool1":true,
       "bool2":false,
       "row":"320722549d1751cf3f247855f937b982"
-    }
+    };
     ast = Parser.tplParse(sql, data);
     //inspect(east);
     ast.set.should.eql([ 
@@ -230,7 +230,7 @@ describe('template test',function(){
         value: { type: 'bool', value: false } 
       } 
     ]);
-  })
+  });
 
   it('insert template ', function(){
     var sql, ast;
@@ -238,7 +238,7 @@ describe('template test',function(){
     var data = {
       agentpos: 499588979,
       priority: 100
-    }
+    };
 
     ast = Parser.tplParse(sql, data);
     ast.values.should.eql([{ 
@@ -247,7 +247,7 @@ describe('template test',function(){
         { type: 'number', value: 499588979 },
         { type: 'number', value: 100 } 
       ] 
-    }])
+    }]);
 
     //do it again
     ast = Parser.tplParse(sql, data);
@@ -258,7 +258,7 @@ describe('template test',function(){
         { type: 'number', value: 499588979 },
         { type: 'number', value: 100 } 
       ] 
-    }])
+    }]);
   })
 
 })

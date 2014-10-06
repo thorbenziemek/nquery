@@ -72,14 +72,14 @@ describe('sql adapter test',function(){
 
   it('comparison test', function() {
     var sql, ast;
-    sql =           "SELECT a fROM garuda_keykeys.keykeys wHERE type > 3 and id in (1, 2, 3) AND keywords CONTAINS (1,'str')"
+    sql =           "SELECT a fROM garuda_keykeys.keykeys wHERE type > 3 and id in (1, 2, 3) AND keywords CONTAINS (1,'str')";
     ast = Parser.parse(sql);
     //inspect(ast);
     var estr = Adapter.toSQL(ast);
     //inspect(estr);
     estr.should.eql("SELECT a FROM garuda_keykeys.keykeys WHERE type > 3 AND id IN (1, 2, 3) AND keywords CONTAINS (1, 'str')");
 
-    sql =           "SELECT a fROM t wHERE type >= 0 AND id between '1' AND 3 and it > 0 "
+    sql =           "SELECT a fROM t wHERE type >= 0 AND id between '1' AND 3 and it > 0 ";
     ast = Parser.parse(sql);
     //inspect(ast);
     estr = Adapter.toSQL(ast);
@@ -109,8 +109,8 @@ describe('sql adapter test',function(){
 
     Context.setctx({
       id : [1, 2, 'a'], 
-      tid : ['b', 'c'], 
-    })
+      tid : ['b', 'c']
+    });
     var estr = Adapter.toSQL(ast);
     //inspect(estr);
     //inspect(ast);
@@ -132,22 +132,22 @@ describe('sql adapter test',function(){
 
   it('join test', function() {
     var sql, ast;
-    sql =           "SELECT a ,b.c FROM a ,b"
+    sql =           "SELECT a ,b.c FROM a ,b";
     ast = Parser.parse(sql);
     //inspect(ast);
     var estr = Adapter.toSQL(ast);
     estr.should.eql("SELECT a, b.c FROM a, b");
 
-    sql =           "SELECT a ,b.c FROM a LEFT join b on a.c = b.c"
+    sql =           "SELECT a ,b.c FROM a LEFT join b on a.c = b.c";
     ast = Parser.parse(sql);
     //inspect(ast);
-    var estr = Adapter.toSQL(ast);
+    estr = Adapter.toSQL(ast);
     estr.should.eql("SELECT a, b.c FROM a LEFT JOIN b ON a.c = b.c");
   });
 
   it('whole test', function(){
     var sql, ast, estr;
-    sql =  "SELECT pt.brand_id AS id, bt.brand_name AS name, ht.org_brand_id AS originBrandId, SUM(pt.uid_uv) AS uv, dc.category_level2 AS level2 FROM myfox.dim_category AS dc INNER JOIN myfox.rpt_brand_info_d AS pt ON dc.category_id = pt.category_id INNER JOIN myfox.dim_product_brand_hismap AS ht ON pt.brand_id = ht.brand_id AND pt.category_id = ht.category_id INNER JOIN myfox.dim_brand AS bt ON bt.brand_id = ht.brand_id WHERE pt.brand_id NOT IN (-99, 0) AND dc.deleted = 0 AND bt.brand_name NOT LIKE 'other%' AND dc.category_level1 = '50013864' AND pt.thedate >= '2012-12-13' AND pt.thedate <= '2012-12-19' GROUP BY brand, brand_name ORDER BY SUM(pt.uid_uv) DESC LIMIT 0, 300"
+    sql =  "SELECT pt.brand_id AS id, bt.brand_name AS name, ht.org_brand_id AS originBrandId, SUM(pt.uid_uv) AS uv, dc.category_level2 AS level2 FROM myfox.dim_category AS dc INNER JOIN myfox.rpt_brand_info_d AS pt ON dc.category_id = pt.category_id INNER JOIN myfox.dim_product_brand_hismap AS ht ON pt.brand_id = ht.brand_id AND pt.category_id = ht.category_id INNER JOIN myfox.dim_brand AS bt ON bt.brand_id = ht.brand_id WHERE pt.brand_id NOT IN (-99, 0) AND dc.deleted = 0 AND bt.brand_name NOT LIKE 'other%' AND dc.category_level1 = '50013864' AND pt.thedate >= '2012-12-13' AND pt.thedate <= '2012-12-19' GROUP BY brand, brand_name ORDER BY SUM(pt.uid_uv) DESC LIMIT 0, 300";
     //sql =  'SELECT pt.brand_id AS id, bt.brand_name AS name, ht.org_brand_id AS originBrandId, SUM(pt.uid_uv) AS uv, dc.category_level2 AS level2 FROM myfox.dim_category AS dc INNER JOIN myfox.rpt_brand_info_d AS pt ON dc.category_id = pt.category_id INNER JOIN myfox.dim_product_brand_hismap AS ht ON pt.brand_id = ht.brand_id AND pt.category_id = ht.category_id INNER JOIN myfox.dim_brand AS bt ON bt.brand_id = ht.brand_id WHERE pt.brand_id NOT IN (-99,0) AND  dc.deleted = 0 AND bt.brand_name NOT like "other%" AND dc.category_level1 = "50013864" AND pt.thedate >= "2012-12-13" AND pt.thedate <= "2012-12-19" GROUP BY brand, brand_name ORDER BY SUM(pt.uid_uv) DESC LIMIT 0, 300 '
     ast = Parser.parse(sql);
     //inspect(ast.from);
@@ -175,7 +175,7 @@ describe('sql adapter test',function(){
 
   it('if test', function() {
     var sql, ast;
-    sql = 'SELECT IF(A.shop_type=2, \'0\', A.shop_star_level_id) AS mk, IF(A.shop_type=2,\'0\',B.shop_star_level_name) AS f0, SUM(A.alipay_trade_num) AS f1 FROM myfox.rpt_cat_info_shop_star_d AS A LEFT JOIN myfox.dim_shop_star_level AS B ON A.shop_star_level_id=B.shop_star_level_id WHERE A.category_id = "50012082" AND A.thedate >= "2010-10-01" AND A.thedate <= "2010-10-31" AND A.alipay_trade_num > 0 AND A.shop_type <> 2 AND B.shop_star_level_id > 0 GROUP BY A.shop_star_level_id ORDER BY A.shop_star_level_id ASC LIMIT 500'
+    sql = 'SELECT IF(A.shop_type=2, \'0\', A.shop_star_level_id) AS mk, IF(A.shop_type=2,\'0\',B.shop_star_level_name) AS f0, SUM(A.alipay_trade_num) AS f1 FROM myfox.rpt_cat_info_shop_star_d AS A LEFT JOIN myfox.dim_shop_star_level AS B ON A.shop_star_level_id=B.shop_star_level_id WHERE A.category_id = "50012082" AND A.thedate >= "2010-10-01" AND A.thedate <= "2010-10-31" AND A.alipay_trade_num > 0 AND A.shop_type <> 2 AND B.shop_star_level_id > 0 GROUP BY A.shop_star_level_id ORDER BY A.shop_star_level_id ASC LIMIT 500';
     ast = Parser.parse(sql);
     //inspect(ast);
     var estr = Adapter.toSQL(ast);
@@ -185,7 +185,7 @@ describe('sql adapter test',function(){
 
   it('update test', function() {
     var sql, ast;
-    sql = "UPDATE db.user_info SET last_login_time = '2012-12-18 12:44:21', last_login_ip = 'hohoo', login_count = login_count+1 WHERE id = 334094"
+    sql = "UPDATE db.user_info SET last_login_time = '2012-12-18 12:44:21', last_login_ip = 'hohoo', login_count = login_count+1 WHERE id = 334094";
     ast = Parser.parse(sql);
     //inspect(ast);
     var estr = Adapter.toSQL(ast);

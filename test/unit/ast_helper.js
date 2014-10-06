@@ -25,7 +25,7 @@ describe('ast helper test', function(){
       { type: 'column_ref',table: '',column: 'd' },
       { type: 'column_ref',table: '',column: 'e' } 
     ]);
-  })
+  });
 
   it('create binary expr', function(){
     var g = createBinaryExpr('>', {type : 'column_ref', value : 'a'}, 0);
@@ -60,7 +60,7 @@ describe('ast helper test', function(){
         } 
       } 
     });
-  })
+  });
 
   it('arithmetic expr', function(){
     var e, r;
@@ -130,7 +130,7 @@ describe('ast helper test', function(){
     e = createBinaryExpr('NOT IN', 1, [0, 1, 2]);
     r = runExpr(e);
     r.should.eql(false);
-  })
+  });
 
   it('unary expr', function(){
     var e, r;
@@ -163,7 +163,7 @@ describe('ast helper test', function(){
     e = createBinaryExpr('OR', false, false);
     r = runExpr(e);
     r.should.eql(false);
-  })
+  });
 
   it('aggr function call ', function(){
     var e, r;
@@ -175,28 +175,28 @@ describe('ast helper test', function(){
           value :[1,2, 3]
         }
       }
-    }
-    e.name = 'COUNT'
+    };
+    e.name = 'COUNT';
     r = runExpr(e);
-    r.should.eql(3)
+    r.should.eql(3);
 
-    e.name = 'SUM',
+    e.name = 'SUM';
     r = runExpr(e);
     inspect(r);
-    r.should.eql(6)
+    r.should.eql(6);
 
     e.name = 'AVG';
     r = runExpr(e);
-    r.should.eql(2)
+    r.should.eql(2);
 
     e.name = 'MAX';
     r = runExpr(e);
-    r.should.eql(3)
+    r.should.eql(3);
 
     e.name = 'MIN';
     r = runExpr(e);
-    r.should.eql(1)
-  })
+    r.should.eql(1);
+  });
 
   it('function call ', function(){
     var e, r;
@@ -204,7 +204,7 @@ describe('ast helper test', function(){
       type : 'function',
       name : '',
       args : [1,2, 3]
-    }
+    };
 
     e.name = 'floor';
     e.args = {
@@ -212,18 +212,18 @@ describe('ast helper test', function(){
       value : [
         {type : 'number', value : 1.5}
       ]
-    }
+    };
     r = runExpr(e);
-    r.should.eql(1)
+    r.should.eql(1);
 
     e.name = 'floor';
     e.args = [1.5];
     r = runExpr(e);
-    r.should.eql(1)
+    r.should.eql(1);
 
     e.name = 'CEILING';
     e.args = [1.5];
     r = runExpr(e);
     r.should.eql(2);
   })
-})
+});
