@@ -166,7 +166,7 @@ column_clause
  * to support complicated expression in column clause
  */
 column_list_item
-  = e:additive_expr __ alias:alias_clause? { 
+  = e:additive_expr __ alias:alias_clause? {
       return {
         expr : e, 
         as : alias
@@ -385,6 +385,36 @@ expr_list_or_empty
       }
     }
 
+case_expr
+  = KW_CASE                         __
+    expr:expr?                      __
+    condition_list:case_when_then+  __
+    otherwise:case_else?            __
+    KW_END __ KW_CASE? {
+      if (otherwise) condition_list.push(otherwise);
+      return {
+        type: 'case',
+        expr: expr || '',
+        args: condition_list
+      };
+    }
+
+case_when_then
+  = KW_WHEN __ condition:expr __ KW_THEN __ result:expr __ {
+    return {
+      type: 'when',
+      cond: condition,
+      result: result
+    };
+  }
+
+case_else = KW_ELSE __ result:expr {
+    return {
+      type: 'else',
+      result: result
+    };
+ }
+
 /** 
  * Borrowed from PL/SQL ,the priority of below list IS ORDER BY DESC 
  * ---------------------------------------------------------------------------------------------------
@@ -558,7 +588,8 @@ multiplicative_operator
 primary 
   = literal
   / aggr_func
-  / func_call 
+  / func_call
+  / case_expr
   / column_ref 
   / param
   / LPAREN __ e:expr __ RPAREN { 
@@ -863,6 +894,12 @@ KW_MAX      = "MAX"i      !ident_start    { return 'MAX';     }
 KW_MIN      = "MIN"i      !ident_start    { return 'MIN';     }
 KW_SUM      = "SUM"i      !ident_start    { return 'SUM';     }
 KW_AVG      = "AVG"i      !ident_start    { return 'AVG';     }
+
+KW_CASE     = "CASE"i     !ident_start
+KW_WHEN     = "WHEN"i     !ident_start
+KW_THEN     = "THEN"i     !ident_start
+KW_ELSE     = "ELSE"i     !ident_start
+KW_END      = "END"i      !ident_start
 
 //specail character
 DOT       = '.'

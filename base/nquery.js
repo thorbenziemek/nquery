@@ -72,6 +72,9 @@ module.exports = (function(){
         "value_item": parse_value_item,
         "expr_list": parse_expr_list,
         "expr_list_or_empty": parse_expr_list_or_empty,
+        "case_expr": parse_case_expr,
+        "case_when_then": parse_case_when_then,
+        "case_else": parse_case_else,
         "or_expr": parse_or_expr,
         "and_expr": parse_and_expr,
         "not_expr": parse_not_expr,
@@ -179,6 +182,11 @@ module.exports = (function(){
         "KW_MIN": parse_KW_MIN,
         "KW_SUM": parse_KW_SUM,
         "KW_AVG": parse_KW_AVG,
+        "KW_CASE": parse_KW_CASE,
+        "KW_WHEN": parse_KW_WHEN,
+        "KW_THEN": parse_KW_THEN,
+        "KW_ELSE": parse_KW_ELSE,
+        "KW_END": parse_KW_END,
         "DOT": parse_DOT,
         "COMMA": parse_COMMA,
         "STAR": parse_STAR,
@@ -780,7 +788,7 @@ module.exports = (function(){
           pos = pos1;
         }
         if (result0 !== null) {
-          result0 = (function(offset, e, alias) { 
+          result0 = (function(offset, e, alias) {
               return {
                 expr : e, 
                 as : alias
@@ -2352,6 +2360,216 @@ module.exports = (function(){
         return result0;
       }
       
+      function parse_case_expr() {
+        var result0, result1, result2, result3, result4, result5, result6, result7, result8, result9, result10;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        result0 = parse_KW_CASE();
+        if (result0 !== null) {
+          result1 = parse___();
+          if (result1 !== null) {
+            result2 = parse_or_expr();
+            result2 = result2 !== null ? result2 : "";
+            if (result2 !== null) {
+              result3 = parse___();
+              if (result3 !== null) {
+                result5 = parse_case_when_then();
+                if (result5 !== null) {
+                  result4 = [];
+                  while (result5 !== null) {
+                    result4.push(result5);
+                    result5 = parse_case_when_then();
+                  }
+                } else {
+                  result4 = null;
+                }
+                if (result4 !== null) {
+                  result5 = parse___();
+                  if (result5 !== null) {
+                    result6 = parse_case_else();
+                    result6 = result6 !== null ? result6 : "";
+                    if (result6 !== null) {
+                      result7 = parse___();
+                      if (result7 !== null) {
+                        result8 = parse_KW_END();
+                        if (result8 !== null) {
+                          result9 = parse___();
+                          if (result9 !== null) {
+                            result10 = parse_KW_CASE();
+                            result10 = result10 !== null ? result10 : "";
+                            if (result10 !== null) {
+                              result0 = [result0, result1, result2, result3, result4, result5, result6, result7, result8, result9, result10];
+                            } else {
+                              result0 = null;
+                              pos = pos1;
+                            }
+                          } else {
+                            result0 = null;
+                            pos = pos1;
+                          }
+                        } else {
+                          result0 = null;
+                          pos = pos1;
+                        }
+                      } else {
+                        result0 = null;
+                        pos = pos1;
+                      }
+                    } else {
+                      result0 = null;
+                      pos = pos1;
+                    }
+                  } else {
+                    result0 = null;
+                    pos = pos1;
+                  }
+                } else {
+                  result0 = null;
+                  pos = pos1;
+                }
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, expr, condition_list, otherwise) {
+              if (otherwise) condition_list.push(otherwise);
+              return {
+                type: 'case',
+                expr: expr || '',
+                args: condition_list
+              };
+            })(pos0, result0[2], result0[4], result0[6]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        return result0;
+      }
+      
+      function parse_case_when_then() {
+        var result0, result1, result2, result3, result4, result5, result6, result7;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        result0 = parse_KW_WHEN();
+        if (result0 !== null) {
+          result1 = parse___();
+          if (result1 !== null) {
+            result2 = parse_or_expr();
+            if (result2 !== null) {
+              result3 = parse___();
+              if (result3 !== null) {
+                result4 = parse_KW_THEN();
+                if (result4 !== null) {
+                  result5 = parse___();
+                  if (result5 !== null) {
+                    result6 = parse_or_expr();
+                    if (result6 !== null) {
+                      result7 = parse___();
+                      if (result7 !== null) {
+                        result0 = [result0, result1, result2, result3, result4, result5, result6, result7];
+                      } else {
+                        result0 = null;
+                        pos = pos1;
+                      }
+                    } else {
+                      result0 = null;
+                      pos = pos1;
+                    }
+                  } else {
+                    result0 = null;
+                    pos = pos1;
+                  }
+                } else {
+                  result0 = null;
+                  pos = pos1;
+                }
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, condition, result) {
+            return {
+              type: 'when',
+              cond: condition,
+              result: result
+            };
+          })(pos0, result0[2], result0[6]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        return result0;
+      }
+      
+      function parse_case_else() {
+        var result0, result1, result2;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        result0 = parse_KW_ELSE();
+        if (result0 !== null) {
+          result1 = parse___();
+          if (result1 !== null) {
+            result2 = parse_or_expr();
+            if (result2 !== null) {
+              result0 = [result0, result1, result2];
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, result) {
+            return {
+              type: 'else',
+              result: result
+            };
+         })(pos0, result0[2]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        return result0;
+      }
+      
       function parse_or_expr() {
         var result0, result1, result2, result3, result4, result5;
         var pos0, pos1, pos2;
@@ -3523,23 +3741,29 @@ module.exports = (function(){
           if (result0 === null) {
             result0 = parse_func_call();
             if (result0 === null) {
-              result0 = parse_column_ref();
+              result0 = parse_case_expr();
               if (result0 === null) {
-                result0 = parse_param();
+                result0 = parse_column_ref();
                 if (result0 === null) {
-                  pos0 = pos;
-                  pos1 = pos;
-                  result0 = parse_LPAREN();
-                  if (result0 !== null) {
-                    result1 = parse___();
-                    if (result1 !== null) {
-                      result2 = parse_or_expr();
-                      if (result2 !== null) {
-                        result3 = parse___();
-                        if (result3 !== null) {
-                          result4 = parse_RPAREN();
-                          if (result4 !== null) {
-                            result0 = [result0, result1, result2, result3, result4];
+                  result0 = parse_param();
+                  if (result0 === null) {
+                    pos0 = pos;
+                    pos1 = pos;
+                    result0 = parse_LPAREN();
+                    if (result0 !== null) {
+                      result1 = parse___();
+                      if (result1 !== null) {
+                        result2 = parse_or_expr();
+                        if (result2 !== null) {
+                          result3 = parse___();
+                          if (result3 !== null) {
+                            result4 = parse_RPAREN();
+                            if (result4 !== null) {
+                              result0 = [result0, result1, result2, result3, result4];
+                            } else {
+                              result0 = null;
+                              pos = pos1;
+                            }
                           } else {
                             result0 = null;
                             pos = pos1;
@@ -3556,21 +3780,18 @@ module.exports = (function(){
                       result0 = null;
                       pos = pos1;
                     }
-                  } else {
-                    result0 = null;
-                    pos = pos1;
-                  }
-                  if (result0 !== null) {
-                    result0 = (function(offset, e) { 
-                        e.paren = true; 
-                        return e; 
-                      })(pos0, result0[2]);
-                  }
-                  if (result0 === null) {
-                    pos = pos0;
-                  }
-                  if (result0 === null) {
-                    result0 = parse_var_decl();
+                    if (result0 !== null) {
+                      result0 = (function(offset, e) { 
+                          e.paren = true; 
+                          return e; 
+                        })(pos0, result0[2]);
+                    }
+                    if (result0 === null) {
+                      pos = pos0;
+                    }
+                    if (result0 === null) {
+                      result0 = parse_var_decl();
+                    }
                   }
                 }
               }
@@ -7386,6 +7607,196 @@ module.exports = (function(){
           result0 = (function(offset) { return 'AVG';     })(pos0);
         }
         if (result0 === null) {
+          pos = pos0;
+        }
+        return result0;
+      }
+      
+      function parse_KW_CASE() {
+        var result0, result1;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        if (input.substr(pos, 4).toLowerCase() === "case") {
+          result0 = input.substr(pos, 4);
+          pos += 4;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"CASE\"");
+          }
+        }
+        if (result0 !== null) {
+          pos1 = pos;
+          reportFailures++;
+          result1 = parse_ident_start();
+          reportFailures--;
+          if (result1 === null) {
+            result1 = "";
+          } else {
+            result1 = null;
+            pos = pos1;
+          }
+          if (result1 !== null) {
+            result0 = [result0, result1];
+          } else {
+            result0 = null;
+            pos = pos0;
+          }
+        } else {
+          result0 = null;
+          pos = pos0;
+        }
+        return result0;
+      }
+      
+      function parse_KW_WHEN() {
+        var result0, result1;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        if (input.substr(pos, 4).toLowerCase() === "when") {
+          result0 = input.substr(pos, 4);
+          pos += 4;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"WHEN\"");
+          }
+        }
+        if (result0 !== null) {
+          pos1 = pos;
+          reportFailures++;
+          result1 = parse_ident_start();
+          reportFailures--;
+          if (result1 === null) {
+            result1 = "";
+          } else {
+            result1 = null;
+            pos = pos1;
+          }
+          if (result1 !== null) {
+            result0 = [result0, result1];
+          } else {
+            result0 = null;
+            pos = pos0;
+          }
+        } else {
+          result0 = null;
+          pos = pos0;
+        }
+        return result0;
+      }
+      
+      function parse_KW_THEN() {
+        var result0, result1;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        if (input.substr(pos, 4).toLowerCase() === "then") {
+          result0 = input.substr(pos, 4);
+          pos += 4;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"THEN\"");
+          }
+        }
+        if (result0 !== null) {
+          pos1 = pos;
+          reportFailures++;
+          result1 = parse_ident_start();
+          reportFailures--;
+          if (result1 === null) {
+            result1 = "";
+          } else {
+            result1 = null;
+            pos = pos1;
+          }
+          if (result1 !== null) {
+            result0 = [result0, result1];
+          } else {
+            result0 = null;
+            pos = pos0;
+          }
+        } else {
+          result0 = null;
+          pos = pos0;
+        }
+        return result0;
+      }
+      
+      function parse_KW_ELSE() {
+        var result0, result1;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        if (input.substr(pos, 4).toLowerCase() === "else") {
+          result0 = input.substr(pos, 4);
+          pos += 4;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"ELSE\"");
+          }
+        }
+        if (result0 !== null) {
+          pos1 = pos;
+          reportFailures++;
+          result1 = parse_ident_start();
+          reportFailures--;
+          if (result1 === null) {
+            result1 = "";
+          } else {
+            result1 = null;
+            pos = pos1;
+          }
+          if (result1 !== null) {
+            result0 = [result0, result1];
+          } else {
+            result0 = null;
+            pos = pos0;
+          }
+        } else {
+          result0 = null;
+          pos = pos0;
+        }
+        return result0;
+      }
+      
+      function parse_KW_END() {
+        var result0, result1;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        if (input.substr(pos, 3).toLowerCase() === "end") {
+          result0 = input.substr(pos, 3);
+          pos += 3;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"END\"");
+          }
+        }
+        if (result0 !== null) {
+          pos1 = pos;
+          reportFailures++;
+          result1 = parse_ident_start();
+          reportFailures--;
+          if (result1 === null) {
+            result1 = "";
+          } else {
+            result1 = null;
+            pos = pos1;
+          }
+          if (result1 !== null) {
+            result0 = [result0, result1];
+          } else {
+            result0 = null;
+            pos = pos0;
+          }
+        } else {
+          result0 = null;
           pos = pos0;
         }
         return result0;

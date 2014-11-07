@@ -233,4 +233,20 @@ describe('sql adapter test',function(){
     estr.should.eql("SELECT 1 UNION SELECT '1' UNION SELECT a UNION SELECT TRUE");
   });
 
+  it('simple case-when', function () {
+    var sql, ast;
+    sql = 'select case when 1 then "one" when 2 then "two" END';
+    ast = Parser.parse(sql);
+    var estr = Adapter.toSQL(ast);
+    estr.should.eql('SELECT CASE WHEN 1 THEN \'one\' WHEN 2 THEN \'two\' END');
+  });
+
+  it('case-when-else', function () {
+    var sql, ast;
+    sql = 'select case FUNC(a) when 1 then "one" when 2 then "two" else "more" END FROM t';
+    ast = Parser.parse(sql);
+    var estr = Adapter.toSQL(ast);
+    estr.should.eql('SELECT CASE FUNC(a) WHEN 1 THEN \'one\' WHEN 2 THEN \'two\' ELSE \'more\' END FROM t');
+  });
+
 });

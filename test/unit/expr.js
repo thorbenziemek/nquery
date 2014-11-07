@@ -2,7 +2,7 @@ var should = require('should');
 var Parser = require(__dirname + '/../../lib/parser');
 
 function inspect(obj) {
-  //console.log(require('util').inspect(obj, false, 10, true));  
+  //console.log(require('util').inspect(obj, false, 10, true));
 }
 
 describe('expression test',function(){
@@ -540,8 +540,104 @@ describe('expression test',function(){
         } 
       }
     });
+  });
 
-  });   
+  describe('CASE/WHEN', function () {
+    var sql, ast;
+
+    it('should support basic case when', function () {
+      sql = 'SELECT CASE WHEN a=1 THEN "one" WHEN a = 2 THEN "two" END FROM t';
+      ast = Parser.parse(sql);
+
+      ast.columns.should.eql([{
+        expr: {
+          type: 'case',
+          expr: '',
+          args: [{
+            type: 'when',
+            cond: {
+              type: 'binary_expr',
+              operator: '=',
+              left: { type: 'column_ref', table: '', column: 'a' },
+              right: { type: 'number', value: 1 }
+            },
+            result: { type: 'string', value: 'one' }
+          }, {
+            type: 'when',
+            cond: {
+              type: 'binary_expr',
+              operator: '=',
+              left: { type: 'column_ref', table: '', column: 'a' },
+              right: { type: 'number', value: 2 }
+            },
+            result: { type: 'string', value: 'two' }
+          }]
+        },
+        as: ''
+      }]);
+    });
+
+    it('should support case conditions', function () {
+      sql = 'SELECT CASE FUNC(a) WHEN 1 THEN "one" WHEN 2 THEN "two" END FROM t';
+      ast = Parser.parse(sql);
+
+      ast.columns.should.eql([{
+        expr: {
+          type: 'case',
+          expr: {
+            type: 'function',
+            name: 'FUNC',
+            args: {
+              type: 'expr_list',
+              value: [{ type: 'column_ref', table: '', column: 'a' }]
+            }
+          },
+          args: [{
+            type: 'when',
+            cond: { type: 'number', value: 1 },
+            result: { type: 'string', value: 'one' }
+          }, {
+            type: 'when',
+            cond: { type: 'number', value: 2 },
+            result: { type: 'string', value: 'two' }
+          }]
+        },
+        as: ''
+      }]);
+    });
+
+    it('should support case/when/else', function () {
+      sql = 'SELECT CASE a WHEN 1 THEN "one" WHEN 2 THEN "two" ELSE FUNC(a) END CASE FROM t';
+      ast = Parser.parse(sql);
+
+      ast.columns.should.eql([{
+        expr: {
+          type: 'case',
+          expr: { type: 'column_ref', table: '', column: 'a' },
+          args: [{
+            type: 'when',
+            cond: { type: 'number', value: 1 },
+            result: { type: 'string', value: 'one' }
+          }, {
+            type: 'when',
+            cond: { type: 'number', value: 2 },
+            result: { type: 'string', value: 'two' }
+          }, {
+            type: 'else',
+            result: {
+              type: 'function',
+              name: 'FUNC',
+              args: {
+                type: 'expr_list',
+                value: [{ type: 'column_ref', table: '', column: 'a' }]
+              }
+            }
+          }]
+        },
+        as: ''
+      }]);
+    });
+  });
 
 });   
 
