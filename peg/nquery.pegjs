@@ -642,8 +642,15 @@ ident
     return name;
   }
 
-quoted_ident =
+quoted_ident
+  = double_quoted_ident
+  / single_quoted_ident
+
+double_quoted_ident =
   '"' chars:[^"]+ '"' { return chars.join(''); }
+
+single_quoted_ident =
+  "'" chars:[^']+ "'" { return chars.join(''); }
 
 column = 
   name:column_name !{ return reservedMap[name.toUpperCase()] === true; } {

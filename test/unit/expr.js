@@ -9,7 +9,7 @@ describe('expression test',function(){
 
   it('primary expr test', function() {
     var sql, ast;
-    sql = "SELECT 1, 'str', `select`, true, fun(4), rand(), :id+1, cf1:name, :select, col AS \"alias-name\"";
+    sql = "SELECT 1, 'str', `select`, true, fun(4), rand(), :id+1, cf1:name, :select, col1 AS \"alias-name1\", col2 AS 'alias-name2'";
     ast = Parser.parse(sql);
     //inspect(ast.columns);
     ast.columns.should.eql([ 
@@ -61,9 +61,17 @@ describe('expression test',function(){
         expr: {
           type: 'column_ref',
           table: '',
-          column: 'col'
+          column: 'col1'
         },
-        as: 'alias-name'
+        as: 'alias-name1'
+      },
+      {
+        expr: {
+          type: 'column_ref',
+          table: '',
+          column: 'col2'
+        },
+        as: 'alias-name2'
       }
     ]) 
   });
