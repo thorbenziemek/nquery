@@ -634,10 +634,16 @@ column_list
       return createList(head, tail);
     }
 
-ident = 
-  name:ident_name !{ return reservedMap[name.toUpperCase()] === true; } {
-    return name;  
-  } 
+ident
+  = name:ident_name !{ return reservedMap[name.toUpperCase()] === true; } {
+    return name;
+  }
+  / name:quoted_ident !{ return reservedMap[name.toUpperCase()] === true; } {
+    return name;
+  }
+
+quoted_ident =
+  '"' chars:[^"]+ '"' { return chars.join(''); }
 
 column = 
   name:column_name !{ return reservedMap[name.toUpperCase()] === true; } {
