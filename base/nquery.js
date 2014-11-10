@@ -183,6 +183,9 @@ module.exports = (function(){
         "LBRAKE": parse_LBRAKE,
         "RBRAKE": parse_RBRAKE,
         "__": parse___,
+        "comment": parse_comment,
+        "block_comment": parse_block_comment,
+        "line_comment": parse_line_comment,
         "char": parse_char,
         "whitespace": parse_whitespace,
         "EOL": parse_EOL,
@@ -7300,9 +7303,211 @@ module.exports = (function(){
         
         result0 = [];
         result1 = parse_whitespace();
+        if (result1 === null) {
+          result1 = parse_comment();
+        }
         while (result1 !== null) {
           result0.push(result1);
           result1 = parse_whitespace();
+          if (result1 === null) {
+            result1 = parse_comment();
+          }
+        }
+        return result0;
+      }
+      
+      function parse_comment() {
+        var result0;
+        
+        result0 = parse_block_comment();
+        if (result0 === null) {
+          result0 = parse_line_comment();
+        }
+        return result0;
+      }
+      
+      function parse_block_comment() {
+        var result0, result1, result2, result3;
+        var pos0, pos1, pos2;
+        
+        pos0 = pos;
+        if (input.substr(pos, 2) === "/*") {
+          result0 = "/*";
+          pos += 2;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"/*\"");
+          }
+        }
+        if (result0 !== null) {
+          result1 = [];
+          pos1 = pos;
+          pos2 = pos;
+          reportFailures++;
+          if (input.substr(pos, 2) === "*/") {
+            result2 = "*/";
+            pos += 2;
+          } else {
+            result2 = null;
+            if (reportFailures === 0) {
+              matchFailed("\"*/\"");
+            }
+          }
+          reportFailures--;
+          if (result2 === null) {
+            result2 = "";
+          } else {
+            result2 = null;
+            pos = pos2;
+          }
+          if (result2 !== null) {
+            result3 = parse_char();
+            if (result3 !== null) {
+              result2 = [result2, result3];
+            } else {
+              result2 = null;
+              pos = pos1;
+            }
+          } else {
+            result2 = null;
+            pos = pos1;
+          }
+          while (result2 !== null) {
+            result1.push(result2);
+            pos1 = pos;
+            pos2 = pos;
+            reportFailures++;
+            if (input.substr(pos, 2) === "*/") {
+              result2 = "*/";
+              pos += 2;
+            } else {
+              result2 = null;
+              if (reportFailures === 0) {
+                matchFailed("\"*/\"");
+              }
+            }
+            reportFailures--;
+            if (result2 === null) {
+              result2 = "";
+            } else {
+              result2 = null;
+              pos = pos2;
+            }
+            if (result2 !== null) {
+              result3 = parse_char();
+              if (result3 !== null) {
+                result2 = [result2, result3];
+              } else {
+                result2 = null;
+                pos = pos1;
+              }
+            } else {
+              result2 = null;
+              pos = pos1;
+            }
+          }
+          if (result1 !== null) {
+            if (input.substr(pos, 2) === "*/") {
+              result2 = "*/";
+              pos += 2;
+            } else {
+              result2 = null;
+              if (reportFailures === 0) {
+                matchFailed("\"*/\"");
+              }
+            }
+            if (result2 !== null) {
+              result0 = [result0, result1, result2];
+            } else {
+              result0 = null;
+              pos = pos0;
+            }
+          } else {
+            result0 = null;
+            pos = pos0;
+          }
+        } else {
+          result0 = null;
+          pos = pos0;
+        }
+        return result0;
+      }
+      
+      function parse_line_comment() {
+        var result0, result1, result2, result3;
+        var pos0, pos1, pos2;
+        
+        pos0 = pos;
+        if (input.substr(pos, 2) === "--") {
+          result0 = "--";
+          pos += 2;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"--\"");
+          }
+        }
+        if (result0 !== null) {
+          result1 = [];
+          pos1 = pos;
+          pos2 = pos;
+          reportFailures++;
+          result2 = parse_EOL();
+          reportFailures--;
+          if (result2 === null) {
+            result2 = "";
+          } else {
+            result2 = null;
+            pos = pos2;
+          }
+          if (result2 !== null) {
+            result3 = parse_char();
+            if (result3 !== null) {
+              result2 = [result2, result3];
+            } else {
+              result2 = null;
+              pos = pos1;
+            }
+          } else {
+            result2 = null;
+            pos = pos1;
+          }
+          while (result2 !== null) {
+            result1.push(result2);
+            pos1 = pos;
+            pos2 = pos;
+            reportFailures++;
+            result2 = parse_EOL();
+            reportFailures--;
+            if (result2 === null) {
+              result2 = "";
+            } else {
+              result2 = null;
+              pos = pos2;
+            }
+            if (result2 !== null) {
+              result3 = parse_char();
+              if (result3 !== null) {
+                result2 = [result2, result3];
+              } else {
+                result2 = null;
+                pos = pos1;
+              }
+            } else {
+              result2 = null;
+              pos = pos1;
+            }
+          }
+          if (result1 !== null) {
+            result0 = [result0, result1];
+          } else {
+            result0 = null;
+            pos = pos0;
+          }
+        } else {
+          result0 = null;
+          pos = pos0;
         }
         return result0;
       }

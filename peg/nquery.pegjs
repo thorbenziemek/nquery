@@ -732,7 +732,7 @@ func_call
     }
 
 literal 
-  = literal_string / literal_numeric / literal_bool /literal_null
+  = literal_string / literal_numeric / literal_bool / literal_null
 
 literal_list
   = head:literal tail:(__ COMMA __ literal)* {
@@ -905,8 +905,19 @@ RPAREN    = ')'
 LBRAKE    = '['
 RBRAKE    = ']'
 
-__ =
-  whitespace*
+// separator
+__
+  = (whitespace / comment)*
+
+comment
+  = block_comment
+  / line_comment
+
+block_comment
+  = "/*" (!"*/" char)* "*/"
+
+line_comment
+  = "--" (!EOL char)*
 
 char = .
 
