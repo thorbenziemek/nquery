@@ -98,6 +98,7 @@ module.exports = (function(){
         "quoted_ident": parse_quoted_ident,
         "double_quoted_ident": parse_double_quoted_ident,
         "single_quoted_ident": parse_single_quoted_ident,
+        "backticks_quoted_ident": parse_backticks_quoted_ident,
         "column": parse_column,
         "column_name": parse_column_name,
         "ident_name": parse_ident_name,
@@ -3793,6 +3794,9 @@ module.exports = (function(){
         result0 = parse_double_quoted_ident();
         if (result0 === null) {
           result0 = parse_single_quoted_ident();
+          if (result0 === null) {
+            result0 = parse_backticks_quoted_ident();
+          }
         }
         return result0;
       }
@@ -3947,8 +3951,83 @@ module.exports = (function(){
         return result0;
       }
       
-      function parse_column() {
+      function parse_backticks_quoted_ident() {
         var result0, result1, result2;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        if (input.charCodeAt(pos) === 96) {
+          result0 = "`";
+          pos++;
+        } else {
+          result0 = null;
+          if (reportFailures === 0) {
+            matchFailed("\"`\"");
+          }
+        }
+        if (result0 !== null) {
+          if (/^[^`]/.test(input.charAt(pos))) {
+            result2 = input.charAt(pos);
+            pos++;
+          } else {
+            result2 = null;
+            if (reportFailures === 0) {
+              matchFailed("[^`]");
+            }
+          }
+          if (result2 !== null) {
+            result1 = [];
+            while (result2 !== null) {
+              result1.push(result2);
+              if (/^[^`]/.test(input.charAt(pos))) {
+                result2 = input.charAt(pos);
+                pos++;
+              } else {
+                result2 = null;
+                if (reportFailures === 0) {
+                  matchFailed("[^`]");
+                }
+              }
+            }
+          } else {
+            result1 = null;
+          }
+          if (result1 !== null) {
+            if (input.charCodeAt(pos) === 96) {
+              result2 = "`";
+              pos++;
+            } else {
+              result2 = null;
+              if (reportFailures === 0) {
+                matchFailed("\"`\"");
+              }
+            }
+            if (result2 !== null) {
+              result0 = [result0, result1, result2];
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, chars) { return chars.join(''); })(pos0, result0[1]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        return result0;
+      }
+      
+      function parse_column() {
+        var result0, result1;
         var pos0, pos1;
         
         pos0 = pos;
@@ -3975,76 +4054,7 @@ module.exports = (function(){
           pos = pos0;
         }
         if (result0 === null) {
-          pos0 = pos;
-          pos1 = pos;
-          if (input.charCodeAt(pos) === 96) {
-            result0 = "`";
-            pos++;
-          } else {
-            result0 = null;
-            if (reportFailures === 0) {
-              matchFailed("\"`\"");
-            }
-          }
-          if (result0 !== null) {
-            if (/^[^`]/.test(input.charAt(pos))) {
-              result2 = input.charAt(pos);
-              pos++;
-            } else {
-              result2 = null;
-              if (reportFailures === 0) {
-                matchFailed("[^`]");
-              }
-            }
-            if (result2 !== null) {
-              result1 = [];
-              while (result2 !== null) {
-                result1.push(result2);
-                if (/^[^`]/.test(input.charAt(pos))) {
-                  result2 = input.charAt(pos);
-                  pos++;
-                } else {
-                  result2 = null;
-                  if (reportFailures === 0) {
-                    matchFailed("[^`]");
-                  }
-                }
-              }
-            } else {
-              result1 = null;
-            }
-            if (result1 !== null) {
-              if (input.charCodeAt(pos) === 96) {
-                result2 = "`";
-                pos++;
-              } else {
-                result2 = null;
-                if (reportFailures === 0) {
-                  matchFailed("\"`\"");
-                }
-              }
-              if (result2 !== null) {
-                result0 = [result0, result1, result2];
-              } else {
-                result0 = null;
-                pos = pos1;
-              }
-            } else {
-              result0 = null;
-              pos = pos1;
-            }
-          } else {
-            result0 = null;
-            pos = pos1;
-          }
-          if (result0 !== null) {
-            result0 = (function(offset, chars) {
-              return chars.join('');  
-            })(pos0, result0[1]);
-          }
-          if (result0 === null) {
-            pos = pos0;
-          }
+          result0 = parse_quoted_ident();
         }
         return result0;
       }
@@ -8680,6 +8690,7 @@ module.exports = (function(){
       
       
         var util = require('util');
+        var reservedMap = require(__dirname + '/../lib/sql_keywords.js');
       
         function debug(str){
           console.log(str);
@@ -8737,53 +8748,6 @@ module.exports = (function(){
             result = createBinaryExpr(tail[i][1], result, tail[i][3]);
           }
           return result;
-        }
-      
-        var reservedMap = {
-          'SHOW'    : true,
-          'DROP'    : true,
-          'SELECT'  : true,
-          'UPDATE'  : true,
-          'CREATE'  : true,
-          'DELETE'  : true,
-          'INSERT'  : true,
-          'REPLACE' : true,
-          'EXPLAIN' : true,
-          'ALL'     : true,
-          'DISTINCT': true,
-          'AS'      : true,
-          'TABLE'   : true,
-          'INTO'    : true,
-          'FROM'    : true,
-          'SET'     : true,
-          'LEFT'    : true,
-          'ON'      : true,
-          'INNER'   : true, 
-          'JOIN'    : true, 
-          'UNION'   : true, 
-          'VALUES'  : true, 
-          'EXISTS'  : true, 
-          'WHERE'   : true,
-          'GROUP'   : true,
-          'BY'      : true,
-          'HAVING'  : true,
-          'ORDER'   : true,
-          'ASC'     : true,
-          'DESC'    : true,
-          'LIMIT'   : true,
-          'BETWEEN' : true, 
-          'IN'      : true,
-          'IS'      : true,
-          'LIKE'    : true,
-          'CONTAINS': true,
-          'NOT'     : true,
-          'AND'     : true, 
-          'OR'      : true,
-      
-          //literal
-          'TRUE'    : true,
-          'FALSE'   : true,
-          'NULL'    : true
         }
       
         var cmpPrefixMap = {

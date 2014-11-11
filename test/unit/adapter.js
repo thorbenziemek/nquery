@@ -26,6 +26,16 @@ describe('sql adapter test',function(){
     //inspect(estr);
   });
 
+  it('should escape reserved keywords in expressions', function () {
+    var sql, ast;
+
+    sql = 'SELECT t."select" FROM t';
+    ast = Parser.parse(sql);
+
+    var estr = Adapter.toSQL(ast);
+    estr.should.eql(sql);
+  });
+
   it('bool & paren test', function() {
     var sql, ast;
 

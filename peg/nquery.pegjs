@@ -7,6 +7,7 @@
 
 {
   var util = require('util');
+  var reservedMap = require(__dirname + '/../lib/sql_keywords.js');
 
   function debug(str){
     console.log(str);
@@ -64,53 +65,6 @@
       result = createBinaryExpr(tail[i][1], result, tail[i][3]);
     }
     return result;
-  }
-
-  var reservedMap = {
-    'SHOW'    : true,
-    'DROP'    : true,
-    'SELECT'  : true,
-    'UPDATE'  : true,
-    'CREATE'  : true,
-    'DELETE'  : true,
-    'INSERT'  : true,
-    'REPLACE' : true,
-    'EXPLAIN' : true,
-    'ALL'     : true,
-    'DISTINCT': true,
-    'AS'      : true,
-    'TABLE'   : true,
-    'INTO'    : true,
-    'FROM'    : true,
-    'SET'     : true,
-    'LEFT'    : true,
-    'ON'      : true,
-    'INNER'   : true, 
-    'JOIN'    : true, 
-    'UNION'   : true, 
-    'VALUES'  : true, 
-    'EXISTS'  : true, 
-    'WHERE'   : true,
-    'GROUP'   : true,
-    'BY'      : true,
-    'HAVING'  : true,
-    'ORDER'   : true,
-    'ASC'     : true,
-    'DESC'    : true,
-    'LIMIT'   : true,
-    'BETWEEN' : true, 
-    'IN'      : true,
-    'IS'      : true,
-    'LIKE'    : true,
-    'CONTAINS': true,
-    'NOT'     : true,
-    'AND'     : true, 
-    'OR'      : true,
-
-    //literal
-    'TRUE'    : true,
-    'FALSE'   : true,
-    'NULL'    : true
   }
 
   var cmpPrefixMap = {
@@ -645,20 +599,22 @@ ident
 quoted_ident
   = double_quoted_ident
   / single_quoted_ident
+  / backticks_quoted_ident
 
-double_quoted_ident =
-  '"' chars:[^"]+ '"' { return chars.join(''); }
+double_quoted_ident
+  = '"' chars:[^"]+ '"' { return chars.join(''); }
 
-single_quoted_ident =
-  "'" chars:[^']+ "'" { return chars.join(''); }
+single_quoted_ident
+  = "'" chars:[^']+ "'" { return chars.join(''); }
 
-column = 
-  name:column_name !{ return reservedMap[name.toUpperCase()] === true; } {
+backticks_quoted_ident
+  = "`" chars:[^`]+ "`" { return chars.join(''); }
+
+column
+  = name:column_name !{ return reservedMap[name.toUpperCase()] === true; } {
     return name;  
-  } 
-  /'`' chars:[^`]+ '`' {
-    return chars.join('');  
   }
+  / quoted_ident
 
 column_name 
   =  start:ident_start parts:column_part* { return start + parts.join(''); }
