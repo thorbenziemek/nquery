@@ -16,12 +16,13 @@ describe('sql adapter test',function(){
   it('string escape test', function() {
     var sql, ast;
 
-    sql = "SELECT 'single str' ,\"double string \", ' escape \\n \\t \\u0002'";
+    sql = "SELECT 'single str' ,\"double string \", ' escape \\n \\t \\u0002', col AS 'alias-name'";
     ast = Parser.parse(sql);
 
     var estr = Adapter.toSQL(ast);
     estr.should.containEql('\\n');
     estr.should.containEql('\\t');
+    estr.should.containEql('col AS \'alias-name\'');
     //inspect(estr);
   });
 
