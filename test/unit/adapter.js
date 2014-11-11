@@ -26,14 +26,34 @@ describe('sql adapter test',function(){
     //inspect(estr);
   });
 
-  it('should escape reserved keywords in expressions', function () {
+  it('should escape reserved keywords in columns', function () {
     var sql, ast;
 
-    sql = 'SELECT t."select" FROM t';
+    sql = 'SELECT col."select" FROM t';
     ast = Parser.parse(sql);
 
     var estr = Adapter.toSQL(ast);
     estr.should.eql(sql);
+  });
+
+  it('should escape reverved keywords in aliases', function () {
+    var sql, ast;
+
+    sql = 'SELECT col AS "index" FROM t';
+    ast = Parser.parse(sql);
+
+    var estr = Adapter.toSQL(ast);
+    estr.should.eql(sql);
+  });
+
+  it('should escape aliases with non-identifier (/a-z0-9_/i) chars', function () {
+    var sql, ast;
+
+    sql = 'SELECT col AS \'foo bar\' FROM t';
+    ast = Parser.parse(sql);
+
+    var estr = Adapter.toSQL(ast);
+    estr.should.containEql("col AS 'foo bar'");
   });
 
   it('bool & paren test', function() {

@@ -623,7 +623,7 @@ ident
   = name:ident_name !{ return reservedMap[name.toUpperCase()] === true; } {
     return name;
   }
-  / name:quoted_ident !{ return reservedMap[name.toUpperCase()] === true; } {
+  / name:quoted_ident {
     return name;
   }
 
@@ -763,7 +763,7 @@ literal_bool
 
 literal_string 
   = ca:( ('"' double_char* '"') 
-        /("'" single_char* "'")) {
+        /("'" single_char* "'")) !{ return reservedMap[ca[1].join('').toUpperCase()] === true; }{
       return {
         type  : 'string',
         value : ca[1].join('')

@@ -7,29 +7,42 @@ function inspect(obj) {
 
 describe('expression test',function(){
 
-  it('primary expr test', function() {
-    var sql, ast;
-    sql = "SELECT 1, 'str', `select`, true, fun(4), rand(), :id+1, cf1:name, :select, col1 AS \"alias-name1\", col2 AS 'alias-name2'";
-    ast = Parser.parse(sql);
-    //inspect(ast.columns);
-    ast.columns.should.eql([ 
-      { expr: { type: 'number', value: 1 },as: '' },
-      { expr: { type: 'string', value: 'str' },as: '' },
-      { expr: { type: 'column_ref', column: 'select', table : '' },as: '' },
-      { expr: { type: 'bool', value: true },as: '' },
-      { 
-        expr: { 
-          type: 'function',
-          name: 'fun',
-          args: {
-            type  : 'expr_list',
-            value : [ { type: 'number', value: 4 } ]
-          }
-        },
-        as: ''
-      },
-      { 
-        expr: { 
+  describe('primary expr', function () {
+    var ast;
+
+    it('should parse numbers', function () {
+      ast = Parser.parse('SELECT 1');
+      ast.columns.should.eql([
+        { expr: { type: 'number', value: 1 }, as: '' }
+      ]);
+    });
+
+    it('should parse strings', function () {
+      ast = Parser.parse('SELECT \'str\'');
+      ast.columns.should.eql([
+        { expr: { type: 'string', value: 'str' }, as: '' }
+      ]);
+    });
+
+    it('should parse SQL keywords as columns', function () {
+      ast = Parser.parse('SELECT `select`, "from" FROM t');
+      ast.columns.should.eql([
+        { expr: { type: 'column_ref', column: 'select', table : '' }, as: '' },
+        { expr: { type: 'column_ref', column: 'from', table : '' }, as: '' }
+      ]);
+    });
+
+    it('should parse boolean expressions', function () {
+      ast = Parser.parse('SELECT true');
+      ast.columns.should.eql([
+        { expr: { type: 'bool', value: true }, as: '' }
+      ]);
+    });
+
+    it('should parse function expressions w/o parameters', function () {
+      ast = Parser.parse('SELECT rand()');
+      ast.columns.should.eql([{
+        expr: {
           type: 'function',
           name: 'rand',
           args: {
@@ -38,42 +51,54 @@ describe('expression test',function(){
           }
         },
         as: ''
-      },
-      { 
-        expr: { 
+      }]);
+    });
+
+    it('should parse function expressions with parameters', function () {
+      ast = Parser.parse('SELECT fun(4)');
+      ast.columns.should.eql([{
+        expr: {
+          type: 'function',
+          name: 'fun',
+          args: {
+            type  : 'expr_list',
+            value : [{ type: 'number', value: 4 }]
+          }
+        },
+        as: ''
+      }]);
+    });
+
+    it('should parse arithmetic expressions', function () {
+      ast = Parser.parse('SELECT :id+1');
+      ast.columns.should.eql([{
+        expr: {
           type: 'binary_expr',
           operator: '+',
           left: { type: 'param', value: 'id' },
-          right: { type: 'number', value: 1 } 
+          right: { type: 'number', value: 1 }
         },
-        as: '' 
-      },
-      { 
-        expr: { 
-          type: 'column_ref',
-          table: '',
-          column: 'cf1:name'
-        },
-        as: '' 
-      },
-      { expr: { type: 'param', value: 'select' },as: '' },
-      {
-        expr: {
-          type: 'column_ref',
-          table: '',
-          column: 'col1'
-        },
-        as: 'alias-name1'
-      },
-      {
-        expr: {
-          type: 'column_ref',
-          table: '',
-          column: 'col2'
-        },
-        as: 'alias-name2'
-      }
-    ]) 
+        as: ''
+      }]);
+    });
+
+    it('should parse hbase column names', function () {
+      ast = Parser.parse('SELECT cf1:name');
+      ast.columns.should.eql([{ expr: { type: 'column_ref', table: '', column: 'cf1:name' }, as: '' }]);
+    });
+
+    it('should parse query parameters', function () {
+      ast = Parser.parse('SELECT :select');
+      ast.columns.should.eql([ { expr: { type: 'param', value: 'select' }, as: '' } ]);
+    });
+
+    it('should parse quoted column aliases', function () {
+      ast = Parser.parse("SELECT col1 AS \"select\", col2 AS 'alias with spaces'");
+      ast.columns.should.eql([
+        { expr: { type: 'column_ref', table: '', column: 'col1' }, as: 'select' },
+        { expr: { type: 'column_ref', table: '', column: 'col2' }, as: 'alias with spaces' }
+      ]);
+    });
   });
 
   it('aggr function test', function() {
@@ -81,7 +106,7 @@ describe('expression test',function(){
 
     sql = "SELECT count(distinct a.id), count(*), SUM(a.id)";
     ast = Parser.parse(sql);
-    inspect(ast);
+
     ast.columns.should.eql([ 
       { 
         expr: { 
