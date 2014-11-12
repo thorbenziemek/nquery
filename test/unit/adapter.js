@@ -277,4 +277,12 @@ describe('sql adapter test',function(){
     estr.should.eql(sql);
   });
 
+  it('sub select in column expressions', function () {
+    var ast;
+    ast = Parser.parse('SELECT \'string\', (SELECT col FROM t2) subSelect FROM t1');
+
+    var estr = Adapter.toSQL(ast);
+    estr.should.eql('SELECT \'string\', (SELECT col FROM t2) AS subSelect FROM t1');
+  });
+
 });

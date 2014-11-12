@@ -187,12 +187,8 @@ column_clause
       return createList(head, tail);
     }
 
-/**
- * maybe you should use `expr` instead of `primary` or `additive_expr` 
- * to support complicated expression in column clause
- */
 column_list_item
-  = e:additive_expr __ alias:alias_clause? {
+  = e:expr __ alias:alias_clause? {
       return {
         expr : e, 
         as : alias
@@ -454,7 +450,9 @@ case_else = KW_ELSE __ result:expr {
  * ---------------------------------------------------------------------------------------------------
  */
 
-expr = or_expr
+expr
+  = or_expr
+  / select_stmt
     
 or_expr
   = head:and_expr tail:(__ KW_OR __ and_expr)* {
@@ -618,7 +616,7 @@ primary
   / case_expr
   / column_ref 
   / param
-  / LPAREN __ e:expr __ RPAREN { 
+  / LPAREN __ e:expr __ RPAREN {
       e.paren = true; 
       return e; 
     } 

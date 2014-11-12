@@ -99,6 +99,27 @@ describe('expression test',function(){
         { expr: { type: 'column_ref', table: '', column: 'col2' }, as: 'alias with spaces' }
       ]);
     });
+
+    it('should parse sub-selects in column expressions', function () {
+      ast = Parser.parse('SELECT \'string\', (SELECT col FROM t2) subSelect FROM t1');
+      ast.columns.should.eql([
+        { expr: { type: 'string', value: 'string' }, as: '' },
+        {
+          expr: {
+            paren: true,
+            type: 'select',
+            distinct: '',
+            columns: [{ expr: {type: 'column_ref', table: '', column: 'col'}, as: '' }],
+            from: [{ db: '', table: 't2', as: '' }],
+            where: '',
+            groupby: '',
+            orderby: '',
+            limit: ''
+          },
+          as: 'subSelect'
+        }
+      ]);
+    });
   });
 
   it('aggr function test', function() {
