@@ -135,13 +135,14 @@ select_stmt
 select_stmt_nake
   = KW_SELECT           __ 
     d:KW_DISTINCT?      __
+    opts:option_clause? __
     c:column_clause     __  
     f:from_clause?      __
     w:where_clause?     __  
     g:group_by_clause?  __  
     o:order_by_clause?  __
     l:limit_clause?  {
-      return {
+      var stmt = {
         type      : 'select',
         distinct  : d,
         columns   : c,
@@ -150,8 +151,33 @@ select_stmt_nake
         groupby   : g,
         orderby   : o,
         limit     : l
-      }   
+      };
+
+      if (opts) {
+        stmt.options = opts;
+      }
+
+      return stmt;
   }
+
+// MySQL extensions to standard SQL
+option_clause
+  = head:query_option tail:(__ query_option)* {
+    var opts = [head];
+    for (var i = 0, l = tail.length; i < l; ++i) {
+      opts.push(tail[i][1]);
+    }
+    return opts;
+  }
+
+query_option
+  = option:(
+        OPT_SQL_CALC_FOUND_ROWS
+        / (OPT_SQL_CACHE / OPT_SQL_NO_CACHE)
+        / OPT_SQL_BIG_RESULT
+        / OPT_SQL_SMALL_RESULT
+        / OPT_SQL_BUFFER_RESULT
+    ) { return option; }
 
 column_clause
   = (KW_ALL / (STAR !ident_start)) {
@@ -900,6 +926,14 @@ KW_WHEN     = "WHEN"i     !ident_start
 KW_THEN     = "THEN"i     !ident_start
 KW_ELSE     = "ELSE"i     !ident_start
 KW_END      = "END"i      !ident_start
+
+// MySQL extensions to SQL
+OPT_SQL_CALC_FOUND_ROWS = "SQL_CALC_FOUND_ROWS"i
+OPT_SQL_CACHE           = "SQL_CACHE"i
+OPT_SQL_NO_CACHE        = "SQL_NO_CACHE"i
+OPT_SQL_SMALL_RESULT    = "SQL_SMALL_RESULT"i
+OPT_SQL_BIG_RESULT      = "SQL_BIG_RESULT"i
+OPT_SQL_BUFFER_RESULT   = "SQL_BUFFER_RESULT"i
 
 //specail character
 DOT       = '.'

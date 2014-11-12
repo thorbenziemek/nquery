@@ -242,8 +242,52 @@ describe('select test',function(){
         }
       }
     ]);
+  });
 
-  });   
+  describe('MySQL SQL extensions', function () {
+    var sql, ast;
+
+    it('should support SQL_CALC_FOUND_ROWS', function () {
+      sql = 'SELECT SQL_CALC_FOUND_ROWS col FROM t';
+      ast = Parser.parse(sql);
+      ast.options.should.be.instanceof(Array);
+      ast.columns.should.eql([
+        { expr: { type: 'column_ref', table: '', column: 'col' }, as: '' }
+      ]);
+      ast.options.should.containEql('SQL_CALC_FOUND_ROWS');
+    });
+
+    it('should support SQL_CACHE/SQL_NO_CACHE', function () {
+      ast = Parser.parse('SELECT SQL_CACHE col FROM t');
+      ast.options.should.containEql('SQL_CACHE');
+
+      ast = Parser.parse('SELECT SQL_NO_CACHE col FROM t');
+      ast.options.should.containEql('SQL_NO_CACHE');
+    });
+
+    it('should support SQL_SMALL_RESULT/SQL_BIG_RESULT', function () {
+      ast = Parser.parse('SELECT SQL_SMALL_RESULT col FROM t');
+      ast.options.should.containEql('SQL_SMALL_RESULT');
+
+      ast = Parser.parse('SELECT SQL_BIG_RESULT col FROM t');
+      ast.options.should.containEql('SQL_BIG_RESULT');
+    });
+
+    it('should support SQL_BUFFER_RESULT', function () {
+      sql = 'SELECT SQL_BUFFER_RESULT col FROM t';
+      ast = Parser.parse(sql);
+      ast.options.should.containEql('SQL_BUFFER_RESULT');
+    });
+
+    it('should support multiple options per query', function () {
+      sql = 'SELECT SQL_CALC_FOUND_ROWS SQL_BIG_RESULT SQL_BUFFER_RESULT col FROM t';
+      ast = Parser.parse(sql);
+      ast.options.should.have.length(3);
+      ast.options.should.containEql('SQL_CALC_FOUND_ROWS');
+      ast.options.should.containEql('SQL_BIG_RESULT');
+      ast.options.should.containEql('SQL_BUFFER_RESULT');
+    });
+  });
 
   xit('from clause test', function() {
     var sql, ast;

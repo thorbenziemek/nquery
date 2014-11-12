@@ -269,4 +269,12 @@ describe('sql adapter test',function(){
     estr.should.eql('SELECT CASE FUNC(a) WHEN 1 THEN \'one\' WHEN 2 THEN \'two\' ELSE \'more\' END FROM t');
   });
 
+  it('MySQL query options', function () {
+    var sql, ast;
+    sql = 'SELECT SQL_CALC_FOUND_ROWS SQL_BUFFER_RESULT col1 FROM t';
+    ast = Parser.parse(sql);
+    var estr = Adapter.toSQL(ast);
+    estr.should.eql(sql);
+  });
+
 });
