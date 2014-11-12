@@ -245,7 +245,7 @@ describe('select test',function(){
 
   });   
 
-  it('from clause test', function() {
+  xit('from clause test', function() {
     var sql, ast;
 
     sql = "select i_item_id, i_list_price, avg(ss_sales_price) agg1 FROM store_sales JOIN item on (store_sales.ss_item_id = item.i_item_id) JOIN customer on (store_sales.ss_customer_id = customer.c_id)";
@@ -255,7 +255,7 @@ describe('select test',function(){
     //ast.from.should.eql([});   
   });
 
-  it('keyword as table test', function() {
+  xit('keyword as table test', function() {
     var sql, ast;
     sql = 'select * from service_a.table as sa inner join service_b.table as sb on sa.id=sb.id where sa.fm=f and sb.id=3';
 

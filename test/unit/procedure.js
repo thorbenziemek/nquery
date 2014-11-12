@@ -14,7 +14,7 @@ function inspect(obj) {
 
 describe('procedure test',function(){
   
- it('assign test', function() {
+ xit('assign test', function() {
     var sql, ast;
 
     sql = [
@@ -66,7 +66,7 @@ describe('procedure test',function(){
     */
   });   
 
-  it('order test', function() {
+  xit('order test', function() {
     var sql ,ast;
     sql = [
       "$a := 1 + 2",
