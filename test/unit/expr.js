@@ -685,5 +685,51 @@ describe('expression test',function(){
     });
   });
 
+  describe('CAST', function () {
+    var ast;
+
+    it('standard', function () {
+      ast = Parser.parse('SELECT CAST(col AS INTEGER) FROM t');
+      ast.columns.should.eql([{
+        expr: {
+          type: 'cast',
+          expr: { type: 'column_ref', table: '', column: 'col' },
+          target: {
+            dataType: 'INTEGER'
+          }
+        },
+        as: ''
+      }]);
+    });
+
+    it('standard with length', function () {
+      ast = Parser.parse('SELECT CAST(col AS VARCHAR(20)) FROM t');
+      ast.columns.should.eql([{
+        expr: {
+          type: 'cast',
+          expr: { type: 'column_ref', table: '', column: 'col' },
+          target: {
+            dataType: 'VARCHAR',
+            length: 20
+          }
+        },
+        as: ''
+      }]);
+    });
+
+    it('MySQL', function () {
+      ast = Parser.parse('select cast(col as signed) from t');
+      ast.columns.should.eql([{
+        expr: {
+          type: 'cast',
+          expr: { type: 'column_ref', table: '', column: 'col' },
+          target: {
+            dataType: 'SIGNED'
+          }
+        },
+        as: ''
+      }]);
+    });
+  });
 });   
 

@@ -611,6 +611,7 @@ multiplicative_operator
 
 primary 
   = literal
+  / cast_expr
   / aggr_func
   / func_call
   / case_expr
@@ -754,6 +755,28 @@ func_call
         args : l
       }
     }
+
+cast_expr
+  = KW_CAST __ LPAREN __ e:expr __ KW_AS __ t:data_type __ RPAREN {
+    return {
+      type: 'cast',
+      expr: e,
+      target: t
+    };
+  }
+  / KW_CAST __ LPAREN __ e:expr __ KW_AS __ s:signedness __ t:KW_INTEGER? __ RPAREN { /* MySQL cast to un-/signed integer */
+    return {
+      type: 'cast',
+      expr: e,
+      target: {
+        dataType: s + (t ? ' ' + t : '')
+      }
+    };
+  }
+
+signedness
+  = KW_SIGNED
+  / KW_UNSIGNED
 
 literal 
   = literal_string / literal_numeric / literal_bool / literal_null
@@ -925,6 +948,21 @@ KW_THEN     = "THEN"i     !ident_start
 KW_ELSE     = "ELSE"i     !ident_start
 KW_END      = "END"i      !ident_start
 
+KW_CAST     = "CAST"i     !ident_start
+
+KW_CHAR     = "CHAR"i     !ident_start    { return 'CHAR';      }
+KW_VARCHAR  = "VARCHAR"i  !ident_start    { return 'VARCHAR';   }
+KW_NUMERIC  = "NUMERIC"i  !ident_start    { return 'NUMERIC';   }
+KW_DECIMAL  = "DECIMAL"i  !ident_start    { return 'DECIMAL';   }
+KW_SIGNED   = "SIGNED"i   !ident_start    { return 'SIGNED';    }
+KW_UNSIGNED = "UNSIGNED"i !ident_start    { return 'UNSIGNED';  }
+KW_INT      = "INT"i      !ident_start    { return 'INT';       }
+KW_INTEGER  = "INTEGER"i  !ident_start    { return 'INTEGER';   }
+KW_SMALLINT = "SMALLINT"i !ident_start    { return 'SMALLINT';  }
+KW_DATE     = "DATE"i     !ident_start    { return 'DATE';      }
+KW_TIME     = "TIME"      !ident_start    { return 'TIME';      }
+KW_TIMESTAMP= "TIMESTAMP" !ident_start    { return 'TIMESTAMP'; }
+
 // MySQL extensions to SQL
 OPT_SQL_CALC_FOUND_ROWS = "SQL_CALC_FOUND_ROWS"i
 OPT_SQL_CACHE           = "SQL_CACHE"i
@@ -1084,6 +1122,33 @@ mem_chain
     }
     return s;
   }
+
+data_type
+  = character_string_type
+  / numeric_type
+  / datetime_type
+
+character_string_type
+  = t:(KW_CHAR / KW_VARCHAR) __ LPAREN __ l:[0-9]+ __ RPAREN __ {
+    return {
+        dataType: t,
+        length: parseInt(l.join(''), 10)
+    };
+  }
+  / t:KW_CHAR { return { dataType: t }; }
+  / t:KW_VARCHAR { return { dataType: t }; }
+
+numeric_type
+  = t:(KW_NUMERIC
+      / KW_DECIMAL
+      / KW_INT
+      / KW_INTEGER
+      / KW_SMALLINT) { return { dataType: t }; }
+
+datetime_type
+  = t:(KW_DATE
+      / KW_TIME
+      / KW_TIMESTAMP) { return { dataType: t }; }
 
  KW_VAR_PRE = '$'
 

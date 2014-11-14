@@ -285,4 +285,14 @@ describe('sql adapter test',function(){
     estr.should.eql('SELECT \'string\', (SELECT col FROM t2) AS subSelect FROM t1');
   });
 
+  it('cast expression', function () {
+    var sql, ast;
+
+    sql = 'SELECT CAST(col AS INTEGER) FROM t';
+    ast = Parser.parse(sql);
+
+    var estr = Adapter.toSQL(ast);
+    estr.should.eql(sql);
+  });
+
 });
