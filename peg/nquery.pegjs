@@ -22,7 +22,7 @@
       type     : 'unary_expr',
       operator : op,
       expr     : e
-    }
+    };
   }
 
   function createBinaryExpr(op, left, right) {
@@ -31,7 +31,7 @@
       operator  : op,
       left      : left,
       right     : right
-    }  
+    };
   }
 
   function createList(head, tail) {
@@ -106,12 +106,12 @@ start
       return {
         ast   : ast,
         param : params
-      } 
+      };
     } 
     /ast:proc_stmts {
       return {
         ast : ast  
-      }
+      };
     }
 
 init  = { params = []; return true; }
@@ -240,7 +240,7 @@ table_base
           db    : t.db,
           table : t.table,
           as    : alias
-        }
+        };
       }
     } 
 
@@ -296,7 +296,7 @@ order_by_element
     var obj = {
       expr : e,
       type : 'ASC'
-    }
+    };
     if (d == 'DESC') {
       obj.type = 'DESC';
     }
@@ -333,7 +333,7 @@ update_stmt
         table : t.table,
         set   : l,
         where : w
-      }  
+      };
     }
 
 set_list
@@ -351,7 +351,7 @@ set_item
       return {
         column: c,
         value : v
-      }
+      };
     }
 
 replace_insert_stmt
@@ -366,12 +366,12 @@ replace_insert_stmt
         table     : t.table,
         columns   : c,
         values    : v
-      }  
+      };
     }
 
 replace_insert
   = KW_INSERT   { return 'insert'; } 
-  / KW_REPLACE  { return 'replace' }
+  / KW_REPLACE  { return 'replace'; }
 
 value_clause
   = KW_VALUES __ l:value_list  { return l; }
@@ -391,7 +391,7 @@ expr_list
   = head:expr tail:(__ COMMA __ expr)*{
       var el = {
         type : 'expr_list'  
-      }
+      };
       var l = createExprList(head, tail, el); 
 
       el.value = l;
@@ -404,7 +404,7 @@ expr_list_or_empty
       return { 
         type  : 'expr_list',
         value : []
-      }
+      };
     }
 
 case_expr
@@ -518,7 +518,7 @@ arithmetic_op_right
       return {
         type : 'arithmetic',
         tail : l
-      }
+      };
     } 
 
 arithmetic_comparison_operator
@@ -529,7 +529,7 @@ is_op_right
       return {
         op    : op,   
         right : right
-      }
+      };
     }
 
 between_op_right
@@ -540,7 +540,7 @@ between_op_right
           type : 'expr_list',
           value : [begin, end]
         }
-      }
+      };
     }
 
 like_op
@@ -560,7 +560,7 @@ like_op_right
       return {
         op    : op,
         right : right
-      }
+      };
     }
 
 in_op_right
@@ -568,13 +568,13 @@ in_op_right
       return {
         op    : op,  
         right : l
-      }
+      };
     }
   / op:in_op __ e:var_decl {
       return {
         op    : op,  
         right : e
-      }
+      };
     }
 
 contains_op_right
@@ -582,13 +582,13 @@ contains_op_right
       return {
         op    : op,  
         right : l
-      }
+      };
     }
   / op:contains_op __ e:var_decl {
       return {
         op    : op,  
         right : e
-      }
+      };
     }
 
 additive_expr
@@ -691,7 +691,7 @@ param
     var p = {
       type : 'param',
       value: l[1]
-    } 
+    };
     //var key = 'L' + line + 'C' + column;
     //debug(key);
     //params[key] = p;
@@ -711,7 +711,7 @@ aggr_fun_smma
         args : {
           expr : e  
         } 
-      }   
+      };
     }
 
 KW_SUM_MAX_MIN_AVG
@@ -723,20 +723,20 @@ aggr_fun_count
         type : 'aggr_func',
         name : name,
         args : arg 
-      }   
+      };
     }
 
 count_arg 
   = e:star_expr {
       return {
         expr  : e 
-      }
+      };
     }
   / d:KW_DISTINCT? __ c:column_ref {
       return {
         distinct : d, 
         expr   : c
-      }
+      };
     }
 
 star_expr 
@@ -744,7 +744,7 @@ star_expr
       return {
         type  : 'star',
         value : '*'
-      }
+      };
     }
 
 func_call
@@ -753,7 +753,7 @@ func_call
         type : 'function',
         name : name, 
         args : l
-      }
+      };
     }
 
 cast_expr
@@ -814,7 +814,7 @@ literal_string
       return {
         type  : 'string',
         value : ca[1].join('')
-      }
+      };
     }
 
 single_char
@@ -847,7 +847,7 @@ literal_numeric
       return {
         type  : 'number',
         value : n 
-      }  
+      };
     }
 
 number
@@ -1015,7 +1015,7 @@ proc_stmt
       return {
         stmt : s,
         vars: varList
-      }
+      };
     }
 
 proc_init  = { varList = []; return true; }
@@ -1026,7 +1026,7 @@ assign_stmt
       type : 'assign',
       left : va,
       right: e
-    }
+    };
   }
 
 return_stmt 
@@ -1034,7 +1034,7 @@ return_stmt
   return {
     type : 'return',
     expr: e
-  }
+  };
 }
 
 proc_expr 
@@ -1063,7 +1063,7 @@ proc_join
         rtable  : rt,
         op      : op,
         on      : expr
-      }
+      };
     }
 
 proc_primary 
@@ -1086,7 +1086,7 @@ proc_func_call
           type  : 'expr_list',
           value : l
         }
-      }
+      };
     }
 
 proc_primary_list 
@@ -1099,7 +1099,7 @@ proc_array =
     return {
       type : 'array',
       value : l
-    }
+    };
   }
 
 
@@ -1111,7 +1111,7 @@ var_decl
       type : 'var',
       name : name,
       members : m
-    }
+    };
   } 
 
 mem_chain 
