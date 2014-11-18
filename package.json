@@ -7,7 +7,8 @@
     "url": "git://github.com/alibaba/nquery.git"
   },
   "scripts": {
-    "test": "make test"
+    "test": "make test",
+    "install": "make base/nquery.js"
   },
   "engines": {
     "node": ">=0.8.0"
