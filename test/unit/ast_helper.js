@@ -27,39 +27,77 @@ describe('ast helper test', function(){
     ]);
   });
 
-  it('create binary expr', function(){
-    var g = createBinaryExpr('>', {type : 'column_ref', value : 'a'}, 0);
-    var e = createBinaryExpr('=', {type : 'column_ref', value : 'b'}, 0);
-    //inspect(g);
-    var a = createBinaryExpr('AND', g, e);
-    a.should.eql({ 
-      operator: 'AND',
-      type: 'binary_expr',
-      left:{ 
-        operator: '>',
+  describe('create binary expr', function () {
+    it('nested', function(){
+      var g = createBinaryExpr('>', {type : 'column_ref', value : 'a'}, 0);
+      var e = createBinaryExpr('=', {type : 'column_ref', value : 'b'}, 0);
+      //inspect(g);
+      var a = createBinaryExpr('AND', g, e);
+      a.should.eql({
+        operator: 'AND',
         type: 'binary_expr',
-        left: { 
-          type: 'column_ref', 
-          value: 'a' 
+        left:{
+          operator: '>',
+          type: 'binary_expr',
+          left: {
+            type: 'column_ref',
+            value: 'a'
+          },
+          right: {
+            type: 'number',
+            value: 0
+          }
         },
-        right: { 
-          type: 'number', 
-          value: 0 
-        } 
-      },
-      right:{
-        operator: '=',
-        type: 'binary_expr',
-        left: { 
-          type: 'column_ref', 
-          value: 'b' 
-        },
-        right: { 
-          type: 'number', 
-          value: 0 
-        } 
-      } 
+        right:{
+          operator: '=',
+          type: 'binary_expr',
+          left: {
+            type: 'column_ref',
+            value: 'b'
+          },
+          right: {
+            type: 'number',
+            value: 0
+          }
+        }
+      });
     });
+
+    it('between operator', function () {
+      var e = createBinaryExpr('BETWEEN', {type : 'column_ref', value : 'a'}, [1, 10]);
+      e.should.eql({
+        operator: 'BETWEEN',
+        type: 'binary_expr',
+        left: { type: 'column_ref', value: 'a' },
+        right:{
+          type: 'expr_list',
+          value: [
+            { type: 'number', value: 1 },
+            { type: 'number', value: 10 }
+          ]
+        }
+      });
+    });
+
+    ['IN', 'NOT IN'].forEach(function (operator) {
+      it(operator + ' operator', function () {
+        var e = createBinaryExpr(operator, { type: 'column_ref', value: 'a' }, [1, 3, 5, 7]);
+        e.should.eql({
+          operator: operator,
+          type: 'binary_expr',
+          left: { type: 'column_ref', value: 'a' },
+          right: {
+            type: 'expr_list',
+            value: [
+              { type: 'number', value: 1 },
+              { type: 'number', value: 3 },
+              { type: 'number', value: 5 },
+              { type: 'number', value: 7 }
+            ]
+          }
+        });
+      });
+    })
   });
 
   it('arithmetic expr', function(){
