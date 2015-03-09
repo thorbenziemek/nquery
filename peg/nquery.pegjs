@@ -252,9 +252,15 @@ alias_clause
   = KW_AS? __ i:ident { return i; }
 
 from_clause
-  = KW_FROM __ l:table_ref_list { return l; }
+  = KW_FROM __ l:table_ref_list
+  { return l; }
 
 table_ref_list
+  = l:table_ref_list_nake / ("(" __ l:table_ref_list __ ")") {
+    return l
+  }
+
+table_ref_list_nake
   = head:table_base 
     tail:table_ref*  {
       tail.unshift(head);
