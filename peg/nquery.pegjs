@@ -102,7 +102,7 @@
 }
 
 start 
-  = &init __ ast:(union_stmt  / update_stmt / replace_insert_stmt) {
+  = &init __ ast:(createview_stmt / union_stmt  / update_stmt / replace_insert_stmt) {
       return {
         ast   : ast,
         param : params
@@ -115,6 +115,59 @@ start
     }
 
 init  = { params = []; return true; }
+
+createview_stmt 
+  = KW_CREATE
+    __ orReplace:(KW_OR __ KW_REPLACE)?
+    __ opts:((__ (algorithm / sql_security / definer))*)
+    __ KW_VIEW
+    __ i:ident
+    __ c:column_clause?
+    __ KW_AS
+    __ select: select_stmt
+    __ checkOption: check_option?
+    {
+      result = {
+        type: 'create view',
+        orReplace: !!orReplace.length,
+        columns: c ? c : null,
+        select: select,
+        checkOption: checkOption ? checkOption : null,
+      }
+
+      mergedOpts = {};
+      for (var i=0; i < opts.length; i++) {
+        var o = opts[i][opts[i].length-1];
+        for (var k in o) {
+          mergedOpts[k] = o[k];
+        }
+      }
+
+      result.opts = mergedOpts;
+      return result;
+    }
+
+sql_security = KW_SQL_SECURITY __ s:(KW_DEFINER / KW_INVOKER) {
+  return {sqlSecurity: s};
+}
+
+check_option = KW_WITH __ o:(KW_CASCADE / KW_LOCAL)? __ KW_CHECK_OPTION {
+  return o.length ? o : true
+}
+
+algorithm = (KW_ALGORITHM __ "=" __ algo:(KW_UNDEFINED / KW_MERGE / KW_TEMPTABLE)) {
+  if (algo.length) {
+    return {algorithm:algo};
+  }
+}
+
+definer = (KW_DEFINER __ "=" __ u:(user)) {
+  if (u.length) {
+    return {definer:u};
+  } 
+}
+user = (user_at_host / "CURRENT_USER()" / "CURRENT_USER")
+user_at_host = ident "@" ident
 
 union_stmt
   = head:select_stmt tail:(__ KW_UNION __ select_stmt)* {
@@ -901,6 +954,7 @@ KW_SET      = "SET"i      !ident_start
 
 KW_AS       = "AS"i       !ident_start
 KW_TABLE    = "TABLE"i    !ident_start
+KW_VIEW     = "VIEW"i    !ident_start
 
 KW_ON       = "ON"i       !ident_start
 KW_LEFT     = "LEFT"i     !ident_start
@@ -962,6 +1016,20 @@ KW_SMALLINT = "SMALLINT"i !ident_start    { return 'SMALLINT';  }
 KW_DATE     = "DATE"i     !ident_start    { return 'DATE';      }
 KW_TIME     = "TIME"      !ident_start    { return 'TIME';      }
 KW_TIMESTAMP= "TIMESTAMP" !ident_start    { return 'TIMESTAMP'; }
+
+KW_ALGORITHM= "ALGORITHM" !ident_start    { return 'ALGORITHM'; }
+KW_UNDEFINED= "UNDEFINED" !ident_start    { return 'UNDEFINED'; }
+KW_MERGE    = "MERGE"     !ident_start    { return 'MERGE'; }
+KW_TEMPTABLE= "TEMPTABLE" !ident_start    { return 'TEMPTABLE'; }
+
+KW_SQL_SECURITY = "SQL SECURITY" !ident_start { return 'SQL SECURITY'; }
+KW_DEFINER = "DEFINER" !ident_start    { return 'DEFINER'; }
+KW_INVOKER = "INVOKER" !ident_start    { return 'INVOKER'; }
+
+KW_WITH = "WITH" !ident_start    { return 'WITH'; }
+KW_CASCADE = "CASCADE" !ident_start    { return 'CASCADE'; }
+KW_LOCAL = "LOCAL" !ident_start    { return 'LOCAL'; }
+KW_CHECK_OPTION = "CHECK OPTION" !ident_start    { return 'CHECK OPTION'; }
 
 // MySQL extensions to SQL
 OPT_SQL_CALC_FOUND_ROWS = "SQL_CALC_FOUND_ROWS"i
